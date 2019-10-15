@@ -1,17 +1,28 @@
 require 'lib/require'
 
+-- External libraries
 GameState = require 'lib.hump.gamestate'
 Class = require 'lib.hump.class'
 Timer = require 'lib.hump.timer'
 vector = require 'lib.hump.vector'
+json = require 'lib.json'
 
-utils = require.tree 'src/utils'
-assets = require 'src/assets'
+-- Misc imports
+Assets = require 'src.assets'
+utils = require.tree 'src.utils'
 
-local game = {}
+-- Game imports
+game = require 'src.states.game'
+Map = require 'src.game.map'
+Facing = require 'src.game.facing'
+UnitData = require 'src.game.unit.unitdata'
+Unit = require 'src.game.unit.unit'
 
 function love.load(args)
-  assets.loadSprites()
+  love.window.setTitle('bab be u - remasteredddd')
+  love.graphics.setDefaultFilter('nearest','nearest')
+
+  Assets.load()
   GameState.registerEvents()
 
   GameState.switch(game)

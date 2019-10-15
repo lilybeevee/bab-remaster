@@ -1,0 +1,27 @@
+{"units": [
+  {
+    "name": "bab",
+    "sprite": "bab",
+    "color": [0, 3],
+    "rotate": true,
+    "layer": 5
+  },
+  {
+    "name": "bab txt",
+    "sprite": "text/bab",
+    "is_text": true,
+    "color": [4, 1]
+  },
+  {
+    "name": "be txt",
+    "sprite": "text/be",
+    "is_text": true,
+    "color": [0, 3]
+  },
+  {
+    "name": "u txt",
+    "sprite": "text/u",
+    "is_text": true,
+    "color": [4, 1]
+  }
+]}
