@@ -12,6 +12,10 @@
   table for additional arguments to be passed in for units
   to use *if they want* so that different types dont need
   to implement unnecessary arguments
+
+  ***************
+  NOTE THAT all of this is currently undecided as im not
+  sure yet how property interactions and stuff will work
 ]]
 local unit = Class{
   name  = 'unit',
