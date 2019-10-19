@@ -3,6 +3,7 @@ local unitdata = Class{
     for k,v in pairs(t) do
       self[k] = v
     end
+    -- if "id" is not specified, set id to name
     if t.name and not t.id then
       self.id = t.name
     end
@@ -13,7 +14,7 @@ local unitdata = Class{
   sprite = 'wat',
   color = {0, 3},
   rotate = false,
-  layer = 0,
+  layer = 1,
 }
 
 return unitdata

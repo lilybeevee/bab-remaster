@@ -39,6 +39,7 @@ function unit:turn(dir)
   unit.dir = dir % 8
 end
 
+-- gets a value of the unit if it's set, otherwise gets the value from the unitdata
 function unit:get(key)
   if self[key] == nil then
     return self.data[key]

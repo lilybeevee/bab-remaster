@@ -57,6 +57,7 @@ end
 -- Asset getters
 ------------------
 
+-- Path-ifies additional arguments:  assets.sprite('game', 'bab') == assets.sprite('game/bab')
 function assets.sprite(...)
   return sprites[table.concat({...},'/')]
 end

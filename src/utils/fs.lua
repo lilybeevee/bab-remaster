@@ -1,6 +1,7 @@
 local fs = {}
 
-
+-- Relative: if true, results do not include the dir (optional)
+-- Pattern: lua string.match pattern for files (optional)
 function fs.recurseFiles(dir, relative, pattern)
   local lfs = love.filesystem
   local result = {}

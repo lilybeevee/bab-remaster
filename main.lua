@@ -23,8 +23,10 @@ function love.load(args)
   love.graphics.setDefaultFilter('nearest','nearest')
 
   Assets.load()
-  GameState.registerEvents()
 
+  -- Assign Love2D events to the GameState system
+  GameState.registerEvents()
+  
   GameState.switch(game)
 end
 

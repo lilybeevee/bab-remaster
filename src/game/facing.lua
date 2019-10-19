@@ -1,16 +1,16 @@
 local facing = {}
 
-facing.RIGHT      = 0
-facing.DOWN_RIGHT = 1
-facing.DOWN       = 2
-facing.DOWN_LEFT  = 3
-facing.LEFT       = 4
-facing.UP_LEFT    = 5
-facing.UP         = 6
-facing.UP_RIGHT   = 7
+facing.RIGHT      = 1
+facing.DOWN_RIGHT = 2
+facing.DOWN       = 3
+facing.DOWN_LEFT  = 4
+facing.LEFT       = 5
+facing.UP_LEFT    = 6
+facing.UP         = 7
+facing.UP_RIGHT   = 8
 
 function facing.angle(dir)
-  return dir * 45
+  return (dir - 1) * 45
 end
 
 function facing.rad(dir)

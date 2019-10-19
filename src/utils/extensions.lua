@@ -1,3 +1,4 @@
+-- Returns true if one of the class's parents (or parents parents and so on) is of a certain class
 function Class.inherits(class, target)
   if class.__includes then
     if type(class.__includes) == "table" then

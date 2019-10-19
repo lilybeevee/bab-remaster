@@ -22,6 +22,7 @@ function game:draw()
   for _,unit in ipairs(self.map.units) do
     local sprite = Assets.sprite('game', unit:get('sprite'))
     local dx, dy = unit.pos.x * 32, unit.pos.y * 32
+    -- gets unit.color, or unit.data.color if that doesn't exist
     self:setColor(unit:get('color'))
     love.graphics.draw(sprite, dx, dy)
   end
