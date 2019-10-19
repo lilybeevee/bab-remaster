@@ -1,4 +1,4 @@
-{"units": [
+[
   {
     "name": "bab",
     "sprite": "bab",
@@ -24,4 +24,4 @@
     "is_text": true,
     "color": [4, 1]
   }
-]}
+]

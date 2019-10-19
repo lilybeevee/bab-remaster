@@ -43,7 +43,7 @@ function assets.loadData()
   unitdata = {}
 
   local tiles = json.decode(love.filesystem.read('assets/data/tiles.json'))
-  for _,data in ipairs(tiles.units) do
+  for _,data in ipairs(tiles) do
     local udata = UnitData(data)
     if unitdata[udata.id] then
       error('Duplicate tile id: ' .. udata.id)
