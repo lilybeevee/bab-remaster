@@ -17,7 +17,7 @@
     "name": "txt_be",
     "sprite": "text/be",
     "is_text": true,
-    "types": ["verb"],
+    "types": ["verb", "verb_class", "verb_property"],
     "color": [0, 3]
   },
   {

@@ -56,8 +56,20 @@ local world = Class{
     end
   end,
 
+  getUnitsOnTile = function(self, x, y, filter)
+    local result = {}
+    for _,unit in ipairs(self.units) do
+      if not filter or filter(unit) then
+        if unit.x == x and unit.y == y then
+          table.insert(result, unit)
+        end
+      end
+    end
+    return result
+  end,
+
   draw = function(self)
-    self.palette:setColor{1, 0}
+    self.palette:setColor(1, 0)
     love.graphics.clear(love.graphics.getColor())
   
     love.graphics.push()
@@ -65,7 +77,7 @@ local world = Class{
     love.graphics.scale(2, 2)
   
     love.graphics.translate(-self.width/2 * TILE_SIZE, -self.height/2 * TILE_SIZE)
-    self.palette:setColor{0, 4}
+    self.palette:setColor(0, 4)
     love.graphics.rectangle('fill', 0, 0, self.width*TILE_SIZE, self.height*TILE_SIZE)
   
     local draw_list = {}

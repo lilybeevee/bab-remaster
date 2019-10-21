@@ -28,7 +28,6 @@ function assets.loadPalettes()
   local files = utils.fs.recurseFiles('assets/palettes', true, '(.*)%.png')
   for _,file in ipairs(files) do
     palettes[file] = Palette(love.image.newImageData('assets/palettes/'..file..'.png'))
-    print('Loaded palette: ' .. file)
   end
 end
 

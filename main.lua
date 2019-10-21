@@ -19,6 +19,8 @@ World = require 'src.game.world'
 Facing = require 'src.game.facing'
 UnitData = require 'src.game.unit.unitdata'
 Unit = require 'src.game.unit.unit'
+parser = require 'src.game.parser'
+Rules = require 'src.game.rules'
 
 function love.load(args)
   love.window.setTitle('bab be u - remasteredddd')

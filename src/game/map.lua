@@ -11,9 +11,12 @@ local map = Class{
     for j,row in ipairs(lvl) do
       for i,tile in ipairs(row) do
         self.width = math.max(self.width, i)
-        local data = Assets.unitData(tile)
-        if data then
-          table.insert(self.units, {x = i-1, y = j-1, data = data})
+        local tiles = type(tile) == 'table' and tile or {tile}
+        for _,tile in ipairs(tiles) do
+          local data = Assets.unitData(tile)
+          if data then
+            table.insert(self.units, {x = i-1, y = j-1, data = data})
+          end
         end
       end
     end
