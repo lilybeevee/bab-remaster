@@ -1,51 +1,63 @@
---[[
-  bab remastered speciality: a **basic unit class**!
-
-  something i felt was missing from bab, this class should
-  define common functionality between objects which can be
-  rule manipulated, regardless of the specifics of their
-  implementation.
-
-  that was a complicated way of saying: mouse/object shared functionality
-
-  all functions will have a final O argument, this is a
-  table for additional arguments to be passed in for units
-  to use *if they want* so that different types dont need
-  to implement unnecessary arguments
-
-  ***************
-  NOTE THAT all of this is currently undecided as im not
-  sure yet how property interactions and stuff will work
-]]
 local unit = Class{
-  name  = 'unit',
-  data  = UnitData{},
-  id    = 0,
-  pos   = vector(0,0),
-  dir   = Facing.RIGHT,
-}
+  init = function(self, data, id)
+    self.data = data
+    self.id = id
 
-function unit:init(data, id)
-  self.data = data
-  self.id = id
-end
+    self.draw = setmetatable({
+      x, y  = self.x, self.y,
+      angle = Facing.angle(self.dir)
+    }, {__call = self._draw})
+  end,
 
-function unit:move(x, y)
-  self.pos.x = x
-  self.pos.y = y
-end
+  data = UnitData{},
+  id   = 0,
+  x, y = 0, 0,
+  dir  = Facing.RIGHT,
+  draw = {},
 
-function unit:turn(dir)
-  unit.dir = dir % 8
-end
+  move = function(self, x, y)
+    self.x = x
+    self.y = y
 
--- gets a value of the unit if it's set, otherwise gets the value from the unitdata
-function unit:get(key)
-  if self[key] == nil then
-    return self.data[key]
-  else
-    return self[key]
+    self.draw.x = self.x
+    self.draw.y = self.y
+  end,
+
+  turn = function(self, dir)
+    self.dir = dir % 8
+
+    self.draw.angle = Facing.angle(self.dir)
+  end,
+
+  getLayer = function(self)
+    if self.is_text then
+      return self.layer + 20
+    else
+      return self.layer
+    end
+  end,
+
+  _draw = function(_, self, palette)
+    local sprite = Assets.sprite('game', self.sprite)
+
+    palette:setColor(self.color)
+
+    love.graphics.translate(sprite:getWidth()/2, sprite:getHeight()/2)
+    love.graphics.rotate(math.rad(self.draw.angle))
+    love.graphics.translate(-sprite:getWidth()/2, -sprite:getHeight()/2)
+
+    love.graphics.draw(sprite)
+  end,
+
+  -- getting key falls back to unitdata if key doesn't exist
+  __index = function(self, key)
+    if rawget(self, 'data') then
+      local data_var = self.data[key]
+      if type(data_var) ~= 'function' then
+        return data_var
+      end
+    end
   end
-end
+}
 
 return unit

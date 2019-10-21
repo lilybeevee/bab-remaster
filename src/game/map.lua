@@ -1,27 +1,27 @@
-local map = Class{}
+local map = Class{
+  init = function(self, name)
+    -- placeholder
+    local lvl = json.decode(love.filesystem.read('levels/'..name..'.json'))
 
-function map:init(name)
-  -- placeholder
-  local lvl = json.decode(love.filesystem.read('levels/'..name..'.json'))
+    self.units = {}
 
-  self.units = {}
+    self.height = #lvl
+    self.width = 0
 
-  self.height = #lvl
-  self.width = 0
-
-  local current_id = 1
-  for i,row in ipairs(lvl) do
-    for j,tile in ipairs(row) do
-      self.width = math.max(self.width, j)
-      local data = Assets.unitData(tile)
-      if data then
-        local unit = Unit(data, current_id)
-        unit.pos = vector(j-1, i-1)
-        table.insert(self.units, unit)
-        current_id = current_id + 1
+    for j,row in ipairs(lvl) do
+      for i,tile in ipairs(row) do
+        self.width = math.max(self.width, i)
+        local data = Assets.unitData(tile)
+        if data then
+          table.insert(self.units, {x = i-1, y = j-1, data = data})
+        end
       end
     end
-  end
-end
+  end,
+
+  width = 0,
+  height = 0,
+  units = {},
+}
 
 return map

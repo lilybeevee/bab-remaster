@@ -27,15 +27,8 @@ function assets.loadPalettes()
 
   local files = utils.fs.recurseFiles('assets/palettes', true, '(.*)%.png')
   for _,file in ipairs(files) do
-    local palette = {}
-    local img = love.image.newImageData('assets/palettes/'..file..'.png')
-    for i = 0, img:getWidth()-1 do
-      for j = 0, img:getHeight()-1 do
-        palette[i..','..j] = {img:getPixel(i, j)}
-      end
-    end
+    palettes[file] = Palette(love.image.newImageData('assets/palettes/'..file..'.png'))
     print('Loaded palette: ' .. file)
-    palettes[file] = palette
   end
 end
 
@@ -62,8 +55,8 @@ function assets.sprite(...)
   return sprites[table.concat({...},'/')]
 end
 
-function assets.palette(name, x, y)
-  return unpack(palettes[name][x..','..y])
+function assets.palette(name)
+  return palettes[name]
 end
 
 function assets.unitData(id)

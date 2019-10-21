@@ -7,21 +7,24 @@
     "layer": 5
   },
   {
-    "name": "bab txt",
+    "name": "txt_bab",
     "sprite": "text/bab",
     "is_text": true,
+    "types": ["object"],
     "color": [4, 1]
   },
   {
-    "name": "be txt",
+    "name": "txt_be",
     "sprite": "text/be",
     "is_text": true,
+    "types": ["verb"],
     "color": [0, 3]
   },
   {
-    "name": "u txt",
+    "name": "txt_u",
     "sprite": "text/u",
     "is_text": true,
+    "types": ["property"],
     "color": [4, 1]
   }
 ]

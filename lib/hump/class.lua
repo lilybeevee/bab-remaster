@@ -68,7 +68,15 @@ local function new(class)
 	end
 
 	-- class implementation
-	class.__index = class
+	local custom_index = class.__index or function() end
+	class.__index = function(table, key)
+		local result = custom_index(table, key)
+		if result ~= nil then
+			return result
+		else
+			return class[key]
+		end
+	end
 	class.init    = class.init    or class[1] or function() end
 	class.include = class.include or include
 	class.clone   = class.clone   or clone
