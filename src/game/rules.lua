@@ -37,6 +37,10 @@ local Rules = Class{
     end
   end,
 
+  ---------------------
+  -- Static Functions
+  ---------------------
+
   serialize = function(rule)
     local str = ''
 
@@ -52,10 +56,6 @@ local Rules = Class{
 
     return serializeWord(rule.subject)..serializeWord(rule.verb)..serializeWord(rule.object)
   end,
-
-  ---------------------
-  -- Static Functions
-  ---------------------
 
   parseSentence = function(sentence, dir)
     local result = {}
