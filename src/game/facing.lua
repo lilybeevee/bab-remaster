@@ -6,6 +6,9 @@ local dir = Class{
     self.x, self.y = pos[1], pos[2]
     self.angle = angle
     self.rad = math.rad(angle)
+
+    facing[id] = self
+    facing[self.x..','..self.y] = self
   end,
 
   spin = function(self, num)
@@ -25,15 +28,6 @@ facing.LEFT       = dir(5, {-1,  0}, 180)
 facing.UP_LEFT    = dir(6, {-1, -1}, 225)
 facing.UP         = dir(7, { 0, -1}, 270)
 facing.UP_RIGHT   = dir(8, { 1, -1}, 315)
-
-facing[1] = facing.RIGHT
-facing[2] = facing.DOWN_RIGHT
-facing[3] = facing.DOWN
-facing[4] = facing.DOWN_LEFT
-facing[5] = facing.LEFT
-facing[6] = facing.UP_LEFT
-facing[7] = facing.UP
-facing[8] = facing.UP_RIGHT
 
 function facing.wrap(id)
   return facing[((id - 1) % #facing) + 1]

@@ -2,6 +2,7 @@ local world = Class{
   init = function(self, ...)
     self.maps = {...}
     self.units = {}
+    self.units_by_name = {}
 
     for _,map in ipairs(self.maps) do
       self.width = math.max(self.width, map.width)
@@ -17,6 +18,7 @@ local world = Class{
   palette = nil,
   maps = {},
   units = {},
+  units_by_name = {},
   max_id = 0,
   width = 0,
   height = 0
@@ -30,6 +32,11 @@ function world:createUnit(x, y, dir, data, o)
   unit:turn(dir, {immediate = true})
 
   self.units[unit.id] = unit
+  
+  if not self.units_by_name[unit.name] then
+    self.units_by_name[unit.name] = {}
+  end
+  table.insert(self.units_by_name[unit.name], unit)
 
   return unit
 end
@@ -45,6 +52,10 @@ function world:removeUnit(unit_or_id)
   end
 
   self.units[id] = nil
+
+  if self.units_by_name[unit.name] then
+    table.remove_value(self.units_by_name[unit.name], unit)
+  end
 end
 
 function world:getNextId(id)

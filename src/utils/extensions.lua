@@ -31,7 +31,9 @@ function table.dump(tbl, deep)
     if str ~= '{' then
       str = str .. ', '
     end
-    if type(k) ~= 'number' then
+    if type(k) == 'table' then
+      str = str .. '(table)' .. ' = '
+    elseif type(k) ~= 'number' then
       str = str .. k .. ' = '
     end
     if type(v) == 'table' and v.dump then
@@ -71,4 +73,13 @@ function table.merge(tbl, other)
     end
   end
   return tbl
+end
+
+function table.remove_value(tbl, value)
+  for i,v in ipairs(tbl) do
+    if v == value then
+      table.remove(tbl, i)
+      return
+    end
+  end
 end
