@@ -15,7 +15,7 @@ function table.copy(table, deep)
   if table == nil then return end
   local new_table = {}
   for k,v in pairs(table) do
-    if deep and type(v) == 'table' then
+    if deep and type(v) == "table" then
       new_table[k] = table.copy(v, true)
     else
       new_table[k] = v
@@ -25,28 +25,28 @@ function table.copy(table, deep)
 end
 
 function table.dump(tbl, deep)
-  if tbl == nil then return 'nil' end
-  local str = '{'
+  if tbl == nil then return "nil" end
+  local str = "{"
   for k,v in pairs(tbl) do
-    if str ~= '{' then
-      str = str .. ', '
+    if str ~= "{" then
+      str = str .. ", "
     end
-    if type(k) == 'table' then
-      str = str .. '(table)' .. ' = '
-    elseif type(k) ~= 'number' then
-      str = str .. k .. ' = '
+    if type(k) == "table" then
+      str = str .. "(table)" .. " = "
+    elseif type(k) ~= "number" then
+      str = str .. k .. " = "
     end
-    if type(v) == 'table' and v.dump then
+    if type(v) == "table" and v.dump then
       str = str .. v:dump(deep)
-    elseif type(v) == 'table' and deep then
+    elseif type(v) == "table" and deep then
       str = str .. table.dump(v, true)
-    elseif type(v) == 'string' then
+    elseif type(v) == "string" then
       str = str .. '"' .. v .. '"'
     else
       str = str .. tostring(v)
     end
   end
-  str = str .. '}'
+  str = str .. "}"
   return str
 end
 
@@ -60,12 +60,12 @@ end
 function table.merge(tbl, other)
   if tbl == nil or other == nil then return tbl end
   for k,v in pairs(other) do
-    if type(k) == 'number' then
+    if type(k) == "number" then
       if not table.contains(tbl, v) then
         table.insert(tbl, v)
       end
     elseif tbl[k] ~= nil then
-      if type(tbl[k]) == 'table' and type(v) == 'table' then
+      if type(tbl[k]) == "table" and type(v) == "table" then
         table.merge(tbl[k], v)
       end
     else

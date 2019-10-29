@@ -5,14 +5,14 @@ local fs = {}
 function fs.recurseFiles(dir, relative, pattern)
   local lfs = love.filesystem
   local result = {}
-  local prefix = relative and '' or dir..'/'
+  local prefix = relative and "" or dir.."/"
 
   local files = lfs.getDirectoryItems(dir)
   for _,file in ipairs(files) do
-    if lfs.getInfo(dir..'/'..file, 'directory') then
-      local subfiles = fs.recurseFiles(dir..'/'.. file, true, pattern)
+    if lfs.getInfo(dir.."/"..file, "directory") then
+      local subfiles = fs.recurseFiles(dir.."/".. file, true, pattern)
       for _,subfile in ipairs(subfiles) do
-        table.insert(result, prefix..file..'/'..subfile)
+        table.insert(result, prefix..file.."/"..subfile)
       end
     else
       if pattern then

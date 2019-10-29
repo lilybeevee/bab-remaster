@@ -16,9 +16,9 @@ local unitdata = Class{
     end
   end,
 
-  id = 'unit',
-  name = 'unit',
-  sprite = 'wat',
+  id = "unit",
+  name = "unit",
+  sprite = "wat",
   is_text = false,
   types = {object = true},
   color = {0, 3},

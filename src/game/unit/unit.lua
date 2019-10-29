@@ -18,15 +18,15 @@ local unit = Class{
 
   -- getting key falls back to unitdata if key doesn't exist
   __index = function(self, key)
-    if rawget(self, 'data') then
+    if rawget(self, "data") then
       local data_var = self.data[key]
-      if type(data_var) ~= 'function' then
+      if type(data_var) ~= "function" then
         return data_var
       end
     end
   end,
   __tostring = function(self)
-    return 'unit('..self.name..':'..self.id..')'
+    return "unit("..self.name..":"..self.id..")"
   end
 }
 
@@ -61,7 +61,7 @@ function unit:getLayer()
 end
 
 function unit:_draw(palette)
-  local sprite = Assets.sprite('game', self.sprite)
+  local sprite = Assets.sprite("game", self.sprite)
 
   love.graphics.setColor(self:getDrawColor(palette))
 

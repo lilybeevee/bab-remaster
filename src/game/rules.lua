@@ -10,8 +10,8 @@ local rules = Class{
 
   __ipairs = function(self) return ipairs(self.rules) end,
   __index = function(self, key)
-    if type(key) == 'number' then
-      local rules = rawget(self, 'rules')
+    if type(key) == "number" then
+      local rules = rawget(self, "rules")
       return rules[key]
     end
   end
@@ -76,11 +76,11 @@ end
   }
 
   should be self explanatory but for you old babbers:
-    rules:match(ANY_UNIT,'be',ANY_WORD) == matchesRule(nil,"be","?")
+    rules:match(ANY_UNIT,"be",ANY_WORD) == matchesRule(nil,"be","?")
 ]]
 function rules:match(subject, verb, object)
   -- simple match cacheing for if the same match is done multiple times
-  local cached = self.cache[tostring(subject)..','..tostring(verb)..','..tostring(object)]
+  local cached = self.cache[tostring(subject)..","..tostring(verb)..","..tostring(object)]
   if cached then return cached end
 
   ---- determines the rules table to search
@@ -88,11 +88,11 @@ function rules:match(subject, verb, object)
   -- otherwise, specific properties are the least common (?) so search for the object next if it's not a unit
   -- lastly search for the subject, or verb if the subject is a unit
   local directory
-  if verb ~= 'be' then
+  if verb ~= "be" then
     directory = self.with[verb]
-  elseif type(object) == 'string' then
+  elseif type(object) == "string" then
     directory = self.with[object]
-  elseif type(subject) == 'string' then
+  elseif type(subject) == "string" then
     directory = self.with[subject]
   else
     directory = self.with[verb]
@@ -108,30 +108,30 @@ function rules:match(subject, verb, object)
   for _,rule in ipairs(directory) do
     -- simple string matching first
     if rule.verb.name ~= verb then break end
-    if type(subject) == 'string' and rule.subject.name ~= subject then break end
-    if type(object) == 'string' and rule.object.name ~= object then break end
+    if type(subject) == "string" and rule.subject.name ~= subject then break end
+    if type(object) == "string" and rule.object.name ~= object then break end
 
     -- non-wildcard unit name matching
-    if type(subject) == 'table' and rule.subject.name ~= subject.name then break end
-    if type(object) == 'table' and rule.object.name ~= object.name then break end
+    if type(subject) == "table" and rule.subject.name ~= subject.name then break end
+    if type(object) == "table" and rule.object.name ~= object.name then break end
 
     -- non-wildcard unit condition checking
-    if type(subject) == 'table' and not rules.testConds(rule.subject.conds, subject, self.world) then break end
-    if type(object) == 'table' and not rules.testConds(rule.object.conds, object, self.world) then break end
+    if type(subject) == "table" and not rules.testConds(rule.subject.conds, subject, self.world) then break end
+    if type(object) == "table" and not rules.testConds(rule.object.conds, object, self.world) then break end
 
     if not finding_units then
       -- not finding wildcard units, return match here
       table.insert(matches, {
         rule = rule,
         units = {
-          subject = type(subject) == 'table' and subject or nil,
-          object = type(object) == 'table' and object or nil
+          subject = type(subject) == "table" and subject or nil,
+          object = type(object) == "table" and object or nil
         }
       })
     else
       -- start matched units tables with any passed in units
-      local matched_subjects = {type(subject) == 'table' and subject or nil}
-      local matched_objects = {type(object) == 'table' and object or nil}
+      local matched_subjects = {type(subject) == "table" and subject or nil}
+      local matched_objects = {type(object) == "table" and object or nil}
 
       -- find wildcard units for subject
       if subject == ANY_UNIT then
@@ -206,7 +206,7 @@ function rules:match(subject, verb, object)
   end
 
   -- cache matches just incase we check the exact same set again
-  self.cache[tostring(subject)..','..tostring(verb)..','..tostring(object)] = matches
+  self.cache[tostring(subject)..","..tostring(verb)..","..tostring(object)] = matches
 
   return matches
 end
@@ -221,13 +221,13 @@ function rules.testConds(conds, unit, world)
 end
 
 function rules.serialize(rule)
-  local str = ''
+  local str = ""
 
   local function serializeWord(word)
-    local str = word.name..' '
+    local str = word.name.." "
     if word.conds and #word.conds > 0 then
       for i,cond in ipairs(word.conds) do
-        str=str..serializeWord(cond)..(i < #word.conds and '& ' or '')
+        str=str..serializeWord(cond)..(i < #word.conds and "& " or "")
       end
     end
     return str
@@ -321,8 +321,8 @@ function rules.getSentences(world)
   local found = {}
   local dirs = {Facing.RIGHT, Facing.DOWN_RIGHT, Facing.DOWN}
   for _,first in ipairs(world.units) do
-    if not found[first.x..','..first.y] then
-      found[first.x..','..first.y] = true
+    if not found[first.x..","..first.y] then
+      found[first.x..","..first.y] = true
       for _,dir in ipairs(dirs) do
         local x, y = first.x, first.y
         if #world:getUnitsOnTile(x-dir.x, y-dir.y, isText) == 0 then

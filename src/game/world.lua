@@ -12,7 +12,7 @@ local world = Class{
       end
     end
 
-    self.palette = Assets.palette('default')
+    self.palette = Assets.palette("default")
   end,
 
   palette = nil,
@@ -47,7 +47,7 @@ function world:removeUnit(unit_or_id)
 
   local unit = self.units[id]
   if not unit then
-    print('attempted removal of already removed unit')
+    print("attempted removal of already removed unit")
     return
   end
 
@@ -90,7 +90,7 @@ function world:draw()
 
   love.graphics.translate(-self.width/2 * TILE_SIZE, -self.height/2 * TILE_SIZE)
   self.palette:setColor(0, 4)
-  love.graphics.rectangle('fill', 0, 0, self.width*TILE_SIZE, self.height*TILE_SIZE)
+  love.graphics.rectangle("fill", 0, 0, self.width*TILE_SIZE, self.height*TILE_SIZE)
 
   local draw_list = {}
   for _,unit in ipairs(self.units) do

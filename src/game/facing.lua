@@ -8,7 +8,7 @@ local dir = Class{
     self.rad = math.rad(angle)
 
     facing[id] = self
-    facing[self.x..','..self.y] = self
+    facing[self.x..","..self.y] = self
   end,
 
   spin = function(self, num)
