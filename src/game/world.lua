@@ -80,6 +80,18 @@ function world:getUnitsOnTile(x, y, filter)
   return result
 end
 
+function world:getUnitsByName(name, filter)
+  local result = {}
+  for _,unit in ipairs(self.units) do
+    if not filter or filter(unit) then
+      if utils.words.compare(name, unit.name) then
+        table.insert(result, unit)
+      end
+    end
+  end
+  return result
+end
+
 function world:draw()
   self.palette:setColor(1, 0)
   love.graphics.clear(love.graphics.getColor())

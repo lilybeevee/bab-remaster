@@ -108,12 +108,12 @@ function rules:match(subject, verb, object)
   for _,rule in ipairs(directory) do
     -- simple string matching first
     if rule.verb.name ~= verb then break end
-    if type(subject) == "string" and rule.subject.name ~= subject then break end
-    if type(object) == "string" and rule.object.name ~= object then break end
+    if type(subject) == "string" and not utils.words.compare(rule.subject.name, subject) then break end
+    if type(object) == "string" and not utils.words.compare(rule.object.name, object) then break end
 
     -- non-wildcard unit name matching
-    if type(subject) == "table" and rule.subject.name ~= subject.name then break end
-    if type(object) == "table" and rule.object.name ~= object.name then break end
+    if type(subject) == "table" and not utils.words.compare(rule.subject.name, subject.name) then break end
+    if type(object) == "table" and not utils.words.compare(rule.object.name, object.name) then break end
 
     -- non-wildcard unit condition checking
     if type(subject) == "table" and not rules.testConds(rule.subject.conds, subject, self.world) then break end
@@ -135,10 +135,8 @@ function rules:match(subject, verb, object)
 
       -- find wildcard units for subject
       if subject == ANY_UNIT then
-        -- stop match here if there are no units with the subject name
-        if not self.world.units_by_name[rule.subject.name] then break end
         -- otherwise, loop through all units in the world with the subject name
-        for _,unit in ipairs(self.world.units_by_name[rule.subject.name]) do
+        for _,unit in ipairs(self.world:getUnitsByName(rule.subject.name)) do
           -- test conditions before adding
           if rules.testConds(rule.subject.conds, unit, self.world) then
             table.insert(matched_subjects, unit)
@@ -150,10 +148,8 @@ function rules:match(subject, verb, object)
 
       -- find wildcard units for object
       if object == ANY_UNIT then
-        -- stop match here if there are no units with the object name
-        if not self.world.units_by_name[rule.object.name] then break end
         -- otherwise, loop through all units in the world with the object name
-        for _,unit in ipairs(self.world.units_by_name[rule.object.name]) do
+        for _,unit in ipairs(self.world:getUnitsByName(rule.object.name)) do
           -- test conditions before adding
           if rules.testConds(rule.object.conds, unit, self.world) then
             table.insert(matched_objects, unit)
