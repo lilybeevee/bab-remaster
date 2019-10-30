@@ -384,5 +384,19 @@
 		"color": [6, 0],
 		"desc": "BRWN: Causes the unit to appear brown. Persistent and can be used as a prefix condition.",
 		"tags": ["colors", "colours", "brown"]
+	},
+	{
+		"name": "txt_txt",
+		"sprite": "text/txt",
+		"is_text": true,
+		"types": ["object"],
+		"color": [4, 1]
+	},
+	{
+		"name": "txt_nt",
+		"sprite": "text/nt",
+		"is_text": true,
+		"types": ["not"],
+		"color": [2, 2]
 	}
 ]

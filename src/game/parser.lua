@@ -52,14 +52,14 @@ function parser.parse(words, dir, no_verb_cond)
   
   local units = {}
   local verbs = {}
-  while words[1].type and (words[1].type.object or words[1].type.cond_prefix or words[1].type.parenthesis) or (words[2] and (words[2].name == "text" or words[2].name == "textn't")) do
+  while words[1].type and (words[1].type.object or words[1].type.cond_prefix or words[1].type.parenthesis) or (words[2] and (words[2].name == "txt" or words[2].name == "txtn't")) do
     local unit, words_ = parser.findUnit(table.copy(words), extra_words, dir, true, no_verb_cond, true) -- outer unit doesn't need to worry about enclosure (nothing farther out to confuse it with)
     if not unit then break end
     words = words_
     if not unit then return false end
     if #words == 0 then return false end
     table.insert(units, unit)
-    if words[1].type and words[1].type["and"] and words[2] and (words[2].type.object or words[2].type.parenthesis or words[3] and (words[3].name == "text" or words[3].name == "textn't")) then
+    if words[1].type and words[1].type["and"] and words[2] and (words[2].type.object or words[2].type.parenthesis or words[3] and (words[3].name == "txt" or words[3].name == "txtn't")) then
       table.insert(extra_words, words[1])
       table.remove(words, 1)
       if #words == 0 then return false end
@@ -134,7 +134,7 @@ function parser.findUnit(words, extra_words_, dir, outer, no_verb_cond, is_subje
       if #words == 0 then return end
     end
     if nt then
-      if prefix.name:ends("n't") then
+      if prefix.name:endsWith("n't") then
         prefix.name = prefix.name:sub(1, -4)
       else
         prefix.name = prefix.name.."n't"
@@ -174,7 +174,7 @@ function parser.findUnit(words, extra_words_, dir, outer, no_verb_cond, is_subje
       local words_ = table.copy(words)
       if infix.type.cond_infix_verb_plus then
         local verb = infix.name:sub(6)
-        table.insert(words_, 1, {name = verb, type = tiles_list[tiles_by_name["text_"..verb]].texttype})
+        table.insert(words_, 1, {name = verb, type = tiles_list[tiles_by_name["txt_"..verb]].texttype})
       end
       local verb
       verb_phrase, words_ = parser.findVerbPhrase(words_, extra_words, dir, enclosed, true)
@@ -202,7 +202,7 @@ function parser.findUnit(words, extra_words_, dir, outer, no_verb_cond, is_subje
         if #words == 0 then break end
       end
       if nt then
-        if infix.name:ends("n't") then
+        if infix.name:endsWith("n't") then
           infix.name = infix.name:sub(1, -4)
         else
           infix.name = infix.name.."n't"
@@ -228,7 +228,7 @@ function parser.findUnit(words, extra_words_, dir, outer, no_verb_cond, is_subje
         table.insert(conds, infix)
         -- print(enclosed, words[1] and words[1].type, words[2] and words[2].type)
         if #words == 0 then break end
-        while enclosed and words[1] and words[1].type["and"] and words[2] and words[3] and (words[2].type.object or words[2].type.parenthesis or (words[3].name == "text" or words[3].name == "textn't")) do
+        while enclosed and words[1] and words[1].type["and"] and words[2] and words[3] and (words[2].type.object or words[2].type.parenthesis or (words[3].name == "txt" or words[3].name == "txtn't")) do
           table.insert(extra_words, words[1])
           table.remove(words, 1)
           if #words == 0 then break end
@@ -288,12 +288,12 @@ function parser.findClass(words)
   
   local unit = table.copy(words[1])
   unit.mods = unit.mods or {}
-  if words[2] and (words[2].name == "text" or words[2].name == "textn't") then
+  if words[2] and (words[2].name == "txt" or words[2].name == "txtn't") then
     table.insert(unit.mods, words[2])
-    if (unit.name ~= unit.unit.textname) then --many letters in a row
-      unit.name = "text_"..unit.name..words[2].name:sub(5)
+    if (unit.name ~= unit.unit:getText()) then --many letters in a row
+      unit.name = "txt_"..unit.name..words[2].name:sub(5)
     else --every other case
-      unit.name = (unit.unit or {fullname = "no unit"}).fullname..words[2].name:sub(5)
+      unit.name = (unit.unit or {name = "no unit"}).name..words[2].name:sub(5)
     end
     table.remove(words, 2)
   elseif not words[1].type.object then
@@ -308,7 +308,7 @@ function parser.findClass(words)
     table.remove(words, 1)
   end
   if nt then
-    if unit.name:ends("n't") then
+    if unit.name:endsWith("n't") then
       unit.name = unit.name:sub(1, -4)
     else
       unit.name = unit.name.."n't"
