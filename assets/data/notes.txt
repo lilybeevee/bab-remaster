@@ -1,0 +1,14 @@
+order of the things (because consistency is important):
+name
+sprite
+sprite transforms
+is_text (will be removed later)
+types
+layer
+color
+rotate
+features
+voice
+desc
+tags
+pronouns
