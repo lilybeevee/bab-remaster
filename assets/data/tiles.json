@@ -372,5 +372,19 @@
 		"color": [2, 2],
 		"desc": "BLACC: Causes the unit to appear black. Persistent and can be used as a prefix condition.",
 		"tags": ["colors", "colours", "black"]
+	},
+	{
+		"name": "txt_txt",
+		"sprite": "text/txt",
+		"is_text": true,
+		"types": ["object"],
+		"color": [4, 1]
+	},
+	{
+		"name": "txt_nt",
+		"sprite": "text/nt",
+		"is_text": true,
+		"types": ["not"],
+		"color": [2, 2]
 	}
 ]

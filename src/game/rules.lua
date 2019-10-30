@@ -26,6 +26,10 @@ end
 function rules:parse()
   self:clear()
 
+  for _,unit in ipairs(self.world:getUnitsByName("txt")) do
+    unit.active = false
+  end
+
   local sentences = rules.getSentences(self.world)
 
   for _,sentence in ipairs(sentences) do

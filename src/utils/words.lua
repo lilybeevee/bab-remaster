@@ -5,8 +5,8 @@ local words = {}
 function words.compare(a, b)
   local nt = false
   local as, bs = a, b
-  if a:endsWith("n't") then as = a:sub(-4); nt = not nt end
-  if b:endsWith("n't") then bs = b:sub(-4); nt = not nt end
+  if a:endsWith("n't") then as = a:sub(1, -4); nt = not nt end
+  if b:endsWith("n't") then bs = b:sub(1, -4); nt = not nt end
 
   if a == b then
     -- exact match, yes
