@@ -199,6 +199,20 @@
     "tags": ["sink"],
   },
   {
+    "name": "laav",
+    "sprite": "laav",
+    "layer": 2,
+    "color": [2, 3],
+    "desc": "very hot. not hotte tho unless u make it",
+    "tags": ["lava"]
+  },
+  {
+    "name": "txt_laav",
+    "sprite": "text/laav",
+    "types": ["object"],
+    "color": [2, 3]
+  }
+  {
     "name": "txt_got",
     "sprite": "text/got",
     "types": ["verb", "verb_class"],
@@ -364,5 +378,87 @@
     "sprite": "text/nt",
     "types": ["not"],
     "color": [2, 2]
+  },
+  {
+    "name": "txt_mous",
+    "sprite": "text/mous",
+    "types": ["object"],
+    "color": [3, 3],
+    "desc": "MOUS: Refers to the mouse cursor. You can create, destroy and apply properties to mouse cursors!",
+    "tags": ["mouse", "cursor"]
+  },
+  {
+    "name": "boux",
+    "sprite": "boux",
+    "layer": 7,
+    "color": [6, 2],
+    "voice": "sdrum",
+    "desc": "ce n'est pas une boîte, c'est quelque chose DE MIEUX",
+    "tags": ["box"]
+  },
+  {
+    "name": "txt_boux",
+    "sprite": "text/boux",
+    "types": ["object"],
+    "color": [6, 1]
+  },
+  {
+    "name": "skul",
+    "sprite": "skul",
+    "layer": 9,
+    "color": [2, 1],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 21, "y": 8, "w": 4, "h": 4}
+    },
+    "voice": "saw",
+    "desc": "evillllll",
+    "tags": ["skull"]
+  },
+  {
+    "name": "txt_skul",
+    "sprite": "text/skul",
+    "types": ["object"],
+    "color": [2, 1]
+  },
+  {
+    "name": "keek",
+    "sprite": "keek",
+    "layer": 11,
+    "color": [2, 2],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 19, "y": 7, "w": 2, "h": 2}
+    },
+    "voice": "saw",
+    "desc": "babs bff",
+    "tags": ["keke"],
+    "pronouns": ["they", "them"]
+  },
+  {
+    "name": "txt_keek",
+    "sprite": "text/keek",
+    "types": ["object"],
+    "color": [2, 2]
+  },
+  {
+    "name": "meem",
+    "sprite": "meem",
+    "layer": 11,
+    "color": [3, 1],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 18, "y": 3, "w": 2, "h": 2}
+    },
+    "voice": "organ",
+    "desc": "meem is the true philosopher of our time. babs 3ff",
+    "tags": ["me"],
+    "pronouns": ["he", "him"]
+  },
+  {
+    "name": "txt_meem",
+    "sprite": "text/meem",
+    "types": ["object"],
+    "color": [3, 1]
   }
 ]
