@@ -7,6 +7,9 @@ local unitdata = Class{
     if t.name and not t.id then
       self.id = t.name
     end
+    if t.name and t.name:startsWith("txt_") then
+      self.is_text = true
+    end
     -- converts {'object', 'verb'} type format to {object = true, verb = true}
     if t.types then
       self.types = {}
