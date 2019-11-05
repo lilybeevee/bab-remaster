@@ -25,6 +25,7 @@ local unitdata = Class{
   is_text = false,
   types = {object = true},
   color = {0, 3},
+  painted = {true},
   rotate = false,
   layer = 1,
 }

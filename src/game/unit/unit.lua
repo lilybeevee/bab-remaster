@@ -61,19 +61,22 @@ function unit:getLayer()
 end
 
 function unit:_draw(palette)
-  local sprite = Assets.sprite("game", self.sprite)
+  for i, something in ipairs(self.sprite) do
+    local sprite = Assets.sprite("game", something)
 
-  love.graphics.setColor(self:getDrawColor(palette))
+    love.graphics.setColor(self:getDrawColor(palette, i))
 
-  love.graphics.translate(sprite:getWidth()/2, sprite:getHeight()/2)
-  love.graphics.rotate(math.rad(self.draw.angle))
-  love.graphics.translate(-sprite:getWidth()/2, -sprite:getHeight()/2)
+    love.graphics.translate(sprite:getWidth()/2, sprite:getHeight()/2)
+    love.graphics.rotate(math.rad(self.draw.angle))
+    love.graphics.translate(-sprite:getWidth()/2, -sprite:getHeight()/2)
 
-  love.graphics.draw(sprite)
+    love.graphics.draw(sprite)
+  end
 end
 
-function unit:getDrawColor(palette)
-  local color = {palette(self.color)}
+function unit:getDrawColor(palette, index)
+  index = index or 1
+  local color = {palette(self.color[index])}
   local brightness = 1
 
   if not self.active and self.is_text then
