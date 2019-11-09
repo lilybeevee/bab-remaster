@@ -1,0 +1,16 @@
+[
+  {
+    "name": "txt_txt",
+    "sprite": ["text/txt"],
+    "types": ["object"],
+    "color": [[4, 1]]
+  },
+  {
+    "name": "txt_mous",
+    "sprite": ["text/mous"],
+    "types": ["object"],
+    "color": [[3, 3]],
+    "desc": "MOUS: Refers to the mouse cursor. You can create, destroy and apply properties to mouse cursors!",
+    "tags": ["mouse", "cursor"]
+  }
+]

@@ -1,0 +1,40 @@
+[
+  {
+    "name": "os",
+    "sprite": ["os"],
+    "layer": 9,
+    "color": [[0, 3]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 14, "y": 8, "w": 2, "h": 2}
+    },
+    "voice": "bit2",
+    "desc": "OS: Its sprites changes with the user's Operating System!",
+    "tags": ["apple", "android", "windows", "linux", "operating system"]
+  },
+  {
+    "name": "txt_os",
+    "sprite": ["text/os"],
+    "types": ["object"],
+    "color": [[4, 1]]
+  },
+  {
+    "name": "wog",
+    "sprite": ["wog"],
+    "layer": 10,
+    "color": [[2, 4]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 16, "y": 9, "w": 3, "h": 3}
+    },
+    "voice": "strum",
+    "desc": "smol frens who own pointy tridents, play with explosives, and bake good cake. wog's dream is to be a mad scientist and go evil with power using nothing but sheer linguistics. linguists' evil career options may be limited but that wont stop wog from trying their best. nobody knows how to describe more than one of them",
+    "tags": ["wug", "bird"]
+  },
+  {
+    "name": "txt_wog",
+    "sprite": ["text/wog"],
+    "types": ["object"],
+    "color": [[2, 4]]
+  }
+]

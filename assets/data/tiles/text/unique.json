@@ -1,0 +1,17 @@
+[
+  {
+    "name": "txt_&",
+    "sprite": ["text/and"],
+    "types": ["and"],
+    "color": [[0, 3]],
+    "desc": "&: Joins multiple conditions, subjects or objects together in a rule. Can also be spelled as ampersand with letters. Rules with stacked text and &s don't work like in baba, be sure to experiment!",
+    "tags": ["and", "ampersand"],
+    "alias": ["ampersand"]
+  },
+  {
+    "name": "txt_nt",
+    "sprite": ["text/nt"],
+    "types": ["not"],
+    "color": [[2, 2]]
+  }
+]

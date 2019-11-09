@@ -1,0 +1,18 @@
+[
+  {
+    "name": "txt_be",
+    "sprite": ["text/be"],
+    "types": ["verb", "verb_class", "verb_property"],
+    "color": [[0, 3]],
+    "desc": "BE (Verb): Causes the subject to become an object or have a property.",
+    "tags": ["is"]
+  },
+  {
+    "name": "txt_got",
+    "sprite": ["text/got"],
+    "types": ["verb", "verb_class"],
+    "color": [[0, 3]],
+    "desc": "GOT (Verb): Causes the subject to drop the object when destroyed.",
+    "tags": ["has"]
+  }
+]
