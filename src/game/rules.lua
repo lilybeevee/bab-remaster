@@ -26,8 +26,10 @@ end
 function rules:parse()
   self:clear()
 
-  for _,unit in ipairs(self.world:getUnitsByName("txt")) do
+  local text_units = self.world:getUnits(function(unit) return unit.is_text end)
+  for _,unit in ipairs(text_units) do
     unit.active = false
+    unit.blocked = false
   end
 
   local sentences = rules.getSentences(self.world)
@@ -38,19 +40,28 @@ function rules:parse()
       self:add(rule)
     end
   end
+
+  -- apply all rules from the new_rules table
+  self:final()
 end
 
 function rules:add(rule)
+  -- make sure whatever the rule we're passing in looks like, it doesnt break stuff!
+  table.fill_defaults(rule, {
+    subject = table.fill_defaults(rule.subject, {conds = {}}),
+    verb = table.fill_defaults(rule.verb, {conds = {}}),
+    object = table.fill_defaults(rule.object, {conds = {}}),
+    units = {},
+    dirs = {}
+  })
+
   table.insert(self.rules, rule)
 
   for _,unit in ipairs(rule.units) do
     unit.active = true
-    
-    if not self.with[unit:getText()] then
-      self.with[unit:getText()] = {}
-    end
-    table.insert(self.with[unit:getText()], rule)
   end
+
+  -- yeah thats it   ╮(￣ω￣;)╭
 end
 
 --[[
@@ -109,28 +120,33 @@ function rules:match(subject, verb, object)
   local finding_units = subject == ANY_UNIT or object == ANY_UNIT
 
   local matches = {}
-  for _,rule in ipairs(directory) do
+  for i,rule in ipairs(directory) do
+    local matched = true
+
     -- simple string matching first
-    if rule.verb.name ~= verb then break end
-    if type(subject) == "string" and not utils.words.compare(rule.subject.name, subject) then break end
-    if type(object) == "string" and not utils.words.compare(rule.object.name, object) then break end
+    if rule.verb.name ~= verb then matched = false end
+    if type(subject) == "string" and not utils.words.compare(rule.subject.name, subject) then matched = false end
+    if type(object) == "string" and not utils.words.compare(rule.object.name, object) then matched = false end
 
     -- non-wildcard unit name matching
-    if type(subject) == "table" and not utils.words.compare(rule.subject.name, subject.name) then break end
-    if type(object) == "table" and not utils.words.compare(rule.object.name, object.name) then break end
+    if type(subject) == "table" and not utils.words.compare(rule.subject.name, subject.name) then matched = false end
+    if type(object) == "table" and not utils.words.compare(rule.object.name, object.name) then matched = false end
 
     -- non-wildcard unit condition checking
-    if type(subject) == "table" and not rules.testConds(rule.subject.conds, subject, self.world) then break end
-    if type(object) == "table" and not rules.testConds(rule.object.conds, object, self.world) then break end
+    if type(subject) == "table" and not rules.testConds(rule.subject.conds, subject, self.world) then matched = false end
+    if type(object) == "table" and not rules.testConds(rule.object.conds, object, self.world) then matched = false end
 
-    if not finding_units then
+    if not matched then
+      -- match failed, do nothing
+    elseif not finding_units then
       -- not finding wildcard units, return match here
       table.insert(matches, {
         rule = rule,
         units = {
           subject = type(subject) == "table" and subject or nil,
           object = type(object) == "table" and object or nil
-        }
+        },
+        index = i
       })
     else
       -- start matched units tables with any passed in units
@@ -139,7 +155,7 @@ function rules:match(subject, verb, object)
 
       -- find wildcard units for subject
       if subject == ANY_UNIT then
-        -- otherwise, loop through all units in the world with the subject name
+        -- loop through all units in the world with the subject name
         for _,unit in ipairs(self.world:getUnitsByName(rule.subject.name)) do
           -- test conditions before adding
           if rules.testConds(rule.subject.conds, unit, self.world) then
@@ -147,7 +163,7 @@ function rules:match(subject, verb, object)
           end
         end
         -- stop matching if no units found
-        if #matched_subjects == 0 then break end
+        if #matched_subjects == 0 then matched = false end
       end
 
       -- find wildcard units for object
@@ -160,13 +176,13 @@ function rules:match(subject, verb, object)
           end
         end
         -- stop matching if no units found
-        if #matched_objects == 0 then break end
+        if #matched_objects == 0 then matched = false end
       end
 
-      ---- messily add matches with all subject/object pairs
-      -- since we won't reach this line if any wildcards haven't found a unit
-      -- we dont have to check whether or not we're matching here
-      if #matched_subjects > 0 then
+      -- messily add matches with all subject/object pairs
+      if not matched then
+        -- didnt find units for one of the unit wildcards, stop here
+      elseif #matched_subjects > 0 then
         -- iterate subject units
         for _,subject_unit in ipairs(matched_subjects) do
           if #matched_objects == 0 then
@@ -175,7 +191,8 @@ function rules:match(subject, verb, object)
               rule = rule,
               units = {
                 subject = subject_unit
-              }
+              },
+              index = i
             })
           else
             -- pair subject units with object units
@@ -185,7 +202,8 @@ function rules:match(subject, verb, object)
                 units = {
                   subject = subject_unit,
                   object = object_unit
-                }
+                },
+                index = i
               })
             end
           end
@@ -209,6 +227,146 @@ function rules:match(subject, verb, object)
   self.cache[tostring(subject)..","..tostring(verb)..","..tostring(object)] = matches
 
   return matches
+end
+
+function rules:final()
+  -- custom getNtCount function for sorting
+  local function getNtCount(rule)
+    local count, verb = utils.words.getNtCount(rule.verb.name)
+    -- special case: 'x be notranform' needs to be above 'x be y' but below 'x ben't y'
+    if count == 0 and rule.verb.name == "be" and rule.object.name == "notranform" then
+      -- but we're sorting by count and 'x ben't y' has a count of 1
+      -- which is directly above 'x be y' with a count of 0...
+      -- SO WE USE A DECIMAL BC WHY NOT YOU CANT STOP ME NYAHAHAHAA
+      count = 0.5
+    end
+    return count, verb
+  end
+
+  -- sort rules table by n't count, to ensure we read them in the correct order
+  table.sort(self.rules, function(a, b)
+    return getNtCount(a) > getNtCount(b)
+  end)
+
+  -- step 1:
+  -- cancel out n't'd rules (haha n't'd thats so weird to look at)
+  for _,rule in ipairs(self.rules) do
+    local nts, verb = getNtCount(rule)
+    if nts > 0 then
+      -- found more than 1 nt, cancel time
+
+      local conds = {rule.subject.conds or {}, rule.object.conds or {}}
+      local has_conds = #conds[1] > 0 or #conds[2] > 0
+
+      -- invert conditions to add to n't'd rules becauuuuse
+      -- they can't just be canceled out
+      local inverse_conds = {{},{}}
+      for i=1,2 do
+        for _,cond in ipairs(conds[i]) do
+          local new_cond = table.copy(cond)
+          if new_cond.name:ends("n't") then
+            new_cond.name = new_cond.name:sub(1, -4)
+          else
+            new_cond.name = new_cond.name .. "n't"
+          end
+          table.insert(inverse_conds[i], new_cond)
+        end
+      end
+
+      -- the verb we need to search for: 1 less n't than we have
+      local lesser_verb = verb
+      for i = 1, nts - 1 do
+        lesser_verb = lesser_verb .. "n't"
+      end
+
+      -- let's find the rules to cancel!
+      local removed_rules = {}
+      for i,lesser_rule in ipairs(self.rules) do
+        local matched = true
+
+        -- simple string matching~
+        if lesser_rule.verb.name ~= lesser_verb then matched = false end
+        if not utils.words.compare(lesser_rule.subject.name, rule.subject.name) then matched = false end
+
+        -- ... but special case object to match any object if we're canceling with notranform
+        if rule.verb.name == "be" and rule.object.name == "notranform" then
+          if not utils.words.isObject(lesser_rule.object.name) then matched = false end
+        else
+          -- otherwise we just string match again
+          if not utils.words.compare(lesser_rule.object.name, rule.object.name) then matched = false end
+        end
+
+        -- only cancel if the rule was matched!!!
+        if matched then
+          -- add inverted conditions to the rule if this is a conditional n't
+          if has_conds then
+            -- can conds be nonexistent? they shouldn't really
+            lesser_rule.subject.conds = lesser_rule.subject.conds or {}
+            lesser_rule.object.conds = lesser_rule.object.conds or {}
+
+            table.merge(lesser_rule.subject.conds, inverse_conds[1])
+            table.merge(lesser_rule.object.conds, inverse_conds[2])
+          end
+
+          -- important case: what if our rules generally matched but
+          --   they only match for specific objects?
+          -- example: babn't and waln't
+          -- so to solve this, we can add an extra condition to the rule name!
+          local multi_rule = false
+          local multi_rules = {{}, {}}
+          if lesser_rule.subject.name ~= rule.subject.name and utils.words.hasMultiple(lesser_rule.subject.name) then
+            local inverse_name
+            if rule.subject.name:endsWith("n't") then
+              inverse_name = rule.subject.name:sub(1, -4)
+            else
+              inverse_name = rule.subject.name .. "n't"
+            end
+            lesser_rule.subject.name = lesser_rule.subject.name .. " & " .. inverse_name
+            multi_rule = true
+          end
+          if lesser_rule.object.name ~= rule.object.name and utils.words.hasMultiple(lesser_rule.object.name) then
+            local inverse_name
+            if rule.object.name:endsWith("n't") then
+              inverse_name = rule.object.name:sub(1, -4)
+            else
+              inverse_name = rule.object.name .. "n't"
+            end
+            lesser_rule.object.name = lesser_rule.object.name .. " & " .. inverse_name
+            multi_rule = true
+          end
+
+          -- remove the rule and block the units only if our rule does not have multiple possibilities
+          if not has_conds and not multi_rule then
+            table.insert(removed_rules, i)
+
+            for _,unit in ipairs(lesser_rule.units) do
+              unit.blocked = true
+            end
+          end
+        end
+      end
+
+      -- actually remove the rules (we couldnt do this in the other loop bc it'd mess with the loop)
+      for i,index in ipairs(removed_rules) do
+        -- also subtract i-1 from the index bc removing things will bump down all indexes
+        table.remove(self.rules, index - (i - 1))
+      end
+    end
+  end
+
+  -- step 2:
+  -- make remaining units unblocked
+  -- create the rules.with table
+  for _,rule in ipairs(self.rules) do
+    for _,unit in ipairs(rule.units) do
+      unit.blocked = false
+
+      if not self.with[unit:getText()] then
+        self.with[unit:getText()] = {}
+      end
+      table.insert(self.with[unit:getText()], rule)
+    end
+  end
 end
 
 ---------------------
@@ -300,23 +458,6 @@ function rules.getSentences(world)
     return unit.is_text
   end
 
-  local function getCombinations(tbl, i)
-    local result = {}
-    i = i or 1
-    if i > #tbl then return {} end
-    for _,v in ipairs(tbl[i]) do
-      local next_combos = getCombinations(tbl, i+1)
-      if #next_combos == 0 then
-        table.insert(result, {v})
-      else
-        for _,combo in ipairs(next_combos) do
-          table.insert(result, {v, unpack(combo)})
-        end
-      end
-    end
-    return result
-  end
-
   local sentences = {}
   local found = {}
   local dirs = {Facing.RIGHT, Facing.DOWN_RIGHT, Facing.DOWN}
@@ -344,7 +485,7 @@ function rules.getSentences(world)
           end
           -- only parse sentences with >= 3 words
           if #sentence >= 3 then
-            for _,combo in ipairs(getCombinations(sentence)) do
+            for _,combo in ipairs(table.get_combinations(sentence)) do
               table.insert(sentences, {words = combo, dir = dir})
             end
           end

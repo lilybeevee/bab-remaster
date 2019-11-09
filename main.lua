@@ -23,6 +23,9 @@ parser = require "src.game.parser"
 Rules = require "src.game.rules"
 
 function love.load(args)
+  --Rules.parse = utils.performance.test(Rules.parse, "parse")
+  --utils.words.compare = utils.performance.test(utils.words.compare, "compare")
+
   love.window.setTitle("bab be u - remasteredddd")
   love.graphics.setDefaultFilter("nearest","nearest")
 
@@ -36,4 +39,8 @@ end
 
 function love.update(dt)
   Timer.update(dt)
+end
+
+function startPerformTests()
+  start_time = love.timer.getTime()
 end

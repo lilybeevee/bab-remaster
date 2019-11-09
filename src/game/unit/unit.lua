@@ -9,14 +9,15 @@ local unit = Class{
     }, {__call = function(_, self, ...) self:_draw(...) end})
   end,
 
-  data = UnitData{},
+  data = {},
   id   = 0,
   x, y = 0, 0,
   dir  = Facing.RIGHT,
   draw = {},
   active = false,
+  blocked = false,
 
-  -- getting key falls back to unitdata if key doesn't exist
+  -- getting key falls back to data if key doesn't exist
   __index = function(self, key)
     if rawget(self, "data") then
       local data_var = self.data[key]
@@ -66,11 +67,19 @@ function unit:_draw(palette)
 
     love.graphics.setColor(self:getDrawColor(palette, i))
 
+    love.graphics.push()
     love.graphics.translate(sprite:getWidth()/2, sprite:getHeight()/2)
     love.graphics.rotate(math.rad(self.draw.angle))
     love.graphics.translate(-sprite:getWidth()/2, -sprite:getHeight()/2)
 
     love.graphics.draw(sprite)
+
+    love.graphics.pop()
+  end
+
+  if self.blocked then
+    palette:setColor(2, 2)
+    love.graphics.draw(Assets.sprite("game", "misc", "x"))
   end
 end
 

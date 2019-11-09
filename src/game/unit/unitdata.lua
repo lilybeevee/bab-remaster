@@ -7,7 +7,8 @@ local unitdata = Class{
     if t.name and not t.id then
       self.id = t.name
     end
-    if t.name and t.name:startsWith("txt_") then
+    -- if "is_text" is not specified, set to true if name starts with "txt_"
+    if t.is_text == nil and t.name:startsWith("txt_") then
       self.is_text = true
     end
     -- converts {'object', 'verb'} type format to {object = true, verb = true}
@@ -29,5 +30,17 @@ local unitdata = Class{
   rotate = false,
   layer = 1,
 }
+
+function unitdata:clone()
+  local o = {}
+  for k,v in pairs(self) do
+    if type(v) == "table" then
+      o[k] = table.copy(v, true)
+    elseif type(v) ~= "function" then
+      o[k] = v
+    end
+  end
+  return o
+end
 
 return unitdata

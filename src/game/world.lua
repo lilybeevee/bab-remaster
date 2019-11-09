@@ -68,28 +68,26 @@ function world:getNextId(id)
   end
 end
 
-function world:getUnitsOnTile(x, y, filter)
+function world:getUnits(filter)
   local result = {}
   for _,unit in ipairs(self.units) do
     if not filter or filter(unit) then
-      if unit.x == x and unit.y == y then
-        table.insert(result, unit)
-      end
+      table.insert(result, unit)
     end
   end
   return result
 end
 
+function world:getUnitsOnTile(x, y, filter)
+  return self:getUnits(function(unit)
+    return unit.x == x and unit.y == y and (not filter or filter(unit))
+  end)
+end
+
 function world:getUnitsByName(name, filter)
-  local result = {}
-  for _,unit in ipairs(self.units) do
-    if not filter or filter(unit) then
-      if utils.words.compare(name, unit.name) then
-        table.insert(result, unit)
-      end
-    end
-  end
-  return result
+  return self:getUnits(function(unit)
+    return utils.words.compare(name, unit.name) and (not filter or filter(unit))
+  end)
 end
 
 function world:draw()

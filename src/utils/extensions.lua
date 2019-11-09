@@ -11,6 +11,21 @@ function string.endsWith(str, val)
   return str:sub(-#val) == val
 end
 
+function string.split(str, delim)
+  local result = {}
+  while #str > 0 do
+    local from, to = str:find(delim)
+    if from then
+      table.insert(result, str:sub(1, from-1))
+      str = str:sub(to+1)
+    else
+      table.insert(result, str)
+      str = ""
+    end
+  end
+  return result
+end
+
 function table.copy(table, deep)
   if table == nil then return end
   local new_table = {}
@@ -82,4 +97,42 @@ function table.remove_value(tbl, value)
       return
     end
   end
+end
+
+function table.get_combinations(tbl, default, i)
+  local result = {}
+  local any_exists = false
+  i = i or 1
+  if i > #tbl then return {} end
+  local function getNext(current)
+    local next_combos, new_exists = table.get_combinations(tbl, default, i+1)
+    any_exists = any_exists or new_exists
+    if #next_combos == 0 then
+      table.insert(result, {current})
+    else
+      for _,combo in ipairs(next_combos) do
+        table.insert(result, {current, unpack(combo)})
+      end
+    end
+  end
+  if #tbl[i] > 0 then
+    any_exists = true
+    for _,v in ipairs(tbl[i]) do
+      getNext(v)
+    end
+  else
+    getNext(default)
+  end
+  if i == 1 and not any_exists then
+    return {}, false
+  else
+    return result, any_exists
+  end
+end
+
+function table.fill_defaults(tbl, defaults)
+  for k,v in pairs(defaults) do
+    if not tbl[k] then tbl[k] = v end
+  end
+  return tbl
 end

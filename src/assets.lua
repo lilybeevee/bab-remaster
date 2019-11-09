@@ -1,7 +1,9 @@
 local assets = {}
 
 
-local sprites, unitdata, palettes
+local sprites
+local unitdata, unitdata_by_name
+local palettes
 
 ------------------
 -- Asset loaders
@@ -33,6 +35,7 @@ end
 
 function assets.loadData()
   unitdata = {}
+  unitdata_by_name = {}
 
   local tiles = json.decode(love.filesystem.read("assets/data/tiles.json"))
   for _,data in ipairs(tiles) do
@@ -41,6 +44,7 @@ function assets.loadData()
       error("Duplicate tile id: " .. udata.id)
     else
       unitdata[udata.id] = udata
+      unitdata_by_name[udata.name] = udata
     end
   end
 end
@@ -60,6 +64,9 @@ end
 
 function assets.unitData(id)
   return unitdata[id]
+end
+function assets.unitDataByName(name)
+  return unitdata_by_name[name]
 end
 
 return assets

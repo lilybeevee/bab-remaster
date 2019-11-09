@@ -3,7 +3,7 @@ local game = {}
 game.movement = require "src.game.movement"
 
 function game:enter()
-  self.world = World(Map("ruletest"))
+  self.world = World(Map("nttest"))
 
   self.rules = Rules(self.world)
   self.rules:parse()
@@ -30,8 +30,12 @@ function game:keypressed(key)
 end
 
 function game:doTurn(x, y)
+  utils.performance.start()
+
   self.movement.doMove(x, y)
   self.rules:parse(self.world)
+
+  utils.performance.stop()
 end
 
 return game
