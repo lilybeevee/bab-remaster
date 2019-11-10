@@ -7,15 +7,18 @@ local unit = Class{
       x, y  = self.x, self.y,
       angle = self.dir.angle
     }, {__call = function(_, self, ...) self:_draw(...) end})
+    
+    self.moves = {}
   end,
 
-  data = {},
-  id   = 0,
-  x, y = 0, 0,
-  dir  = Facing.RIGHT,
-  draw = {},
-  active = false,
+  data    = {},
+  id      = 0,
+  x, y    = 0, 0,
+  dir     = Facing.RIGHT,
+  draw    = {},
+  active  = false,
   blocked = false,
+  moves   = {},
 
   -- getting key falls back to data if key doesn't exist
   __index = function(self, key)

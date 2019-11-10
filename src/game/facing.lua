@@ -33,4 +33,16 @@ function facing.wrap(id)
   return facing[((id - 1) % #facing) + 1]
 end
 
+function facing.fromAngle(angle)
+  return facing.wrap(utils.math.round((angle % 360) / 45) + 1)
+end
+
+function facing.fromRad(rad)
+  return facing.fromAngle(math.deg(rad))
+end
+
+function facing.fromPos(x, y)
+  return facing.fromRad(math.atan2(y, x))
+end
+
 return facing

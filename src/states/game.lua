@@ -33,7 +33,7 @@ function game:doTurn(x, y)
   utils.performance.start()
 
   self.movement.doMove(x, y)
-  self.rules:parse(self.world)
+  self.rules:parse()
 
   utils.performance.stop()
 end

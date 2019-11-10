@@ -90,6 +90,10 @@ function world:getUnitsByName(name, filter)
   end)
 end
 
+function world:inBounds(x, y)
+  return x >= 0 and y >= 0 and x < self.width and y < self.height
+end
+
 function world:draw()
   self.palette:setColor(1, 0)
   love.graphics.clear(love.graphics.getColor())
