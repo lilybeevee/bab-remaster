@@ -8,7 +8,7 @@ local world = Class{
       self.width = math.max(self.width, map.width)
       self.height = math.max(self.height, map.height)
       for _,unit in ipairs(map.units) do
-        self:createUnit(unit.x, unit.y, Facing.RIGHT, unit.data)
+        self:createUnit(unit.x, unit.y, unit.dir, unit.data)
       end
     end
 

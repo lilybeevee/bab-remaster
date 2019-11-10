@@ -29,6 +29,7 @@ function love.load(args)
   love.window.setTitle("bab be u - remasteredddd")
   love.graphics.setDefaultFilter("nearest","nearest")
   print("lily's the best <3")
+  print("no u <3")
   Assets.load()
 
   -- Assign Love2D events to the GameState system

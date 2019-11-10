@@ -75,15 +75,18 @@ function movement.doMove(x, y)
             local move = moves[1]
             
             local function moveUnit(unit, move)
-              if movement.canMove(unit, move.dir.x, move.dir.y) then
+              local success, movers = movement.canMove(unit, move.dir.x, move.dir.y)
+              if success then
                 movement.addMove(unit, {x = move.dir.x, y = move.dir.y, rotate = move.rotate})
+                for _,mover in ipairs(movers) do
+                  movement.addMove(mover, {x = move.dir.x, y = move.dir.y, rotate = true})
+                end
 
                 successes = successes + 1
                 move.times = move.times - 1
                 something_moved = true
-                return true
               end
-              return false
+              return success
             end
             
             if not moveUnit(unit, move) and move.reason == "walk" and not unit:hasProperty("stubbn") then
@@ -150,8 +153,26 @@ function movement.applyMoves()
   movement.move_queue = {}
 end
 
-function movement.canMove(unit, dx, dy)
-  return game.world:inBounds(unit.x + dx, unit.y + dy)
+function movement.canMove(unit, dx, dy, o)
+  o = o or {}
+  local movers = {}
+  local x, y = unit.x + dx, unit.y + dy
+
+  if not game.world:inBounds(x, y) then
+    return false, {}
+  end
+
+  for _,pushed in ipairs(game.world:getUnitsOnTile(x, y, function(unit) return unit:hasProperty("goawaypls") end)) do
+    local push_success, push_movers = movement.canMove(pushed, dx, dy)
+    if push_success then
+      table.insert(movers, pushed)
+      table.merge(movers, push_movers)
+    else
+      return false, {}
+    end
+  end
+
+  return true, movers
 end
 
 return movement

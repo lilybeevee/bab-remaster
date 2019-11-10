@@ -3,14 +3,10 @@ local game = {}
 game.movement = require "src.game.movement"
 
 function game:enter()
-  self.world = World(Map("movetest"))
+  self.world = World(Map("pushtest"))
 
   self.rules = Rules(self.world)
   self.rules:parse()
-
-  for i,rule in ipairs(self.rules) do
-    print("Has rule: " .. Rules.serialize(rule))
-  end
 end
 
 function game:draw()

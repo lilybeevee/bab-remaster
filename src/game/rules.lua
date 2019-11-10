@@ -26,6 +26,8 @@ end
 function rules:parse()
   self:clear()
 
+  self:addBase("txt", "be", "goawaypls")
+
   local text_units = self.world:getUnits(function(unit) return unit.is_text end)
   for _,unit in ipairs(text_units) do
     unit.active = false
@@ -43,6 +45,11 @@ function rules:parse()
 
   -- apply all rules from the new_rules table
   self:final()
+
+  print("-----[parsed]------")
+  for i,rule in ipairs(self) do
+    print("Has rule: " .. Rules.serialize(rule))
+  end
 end
 
 function rules:add(rule)
@@ -62,6 +69,14 @@ function rules:add(rule)
   end
 
   -- yeah thats it   ╮(￣ω￣;)╭
+end
+
+function rules:addBase(subject, verb, object)
+  self:add{
+    subject = {name = subject},
+    verb = {name = verb},
+    object = {name = object},
+  }
 end
 
 --[[
@@ -360,12 +375,22 @@ function rules:final()
   for _,rule in ipairs(self.rules) do
     for _,unit in ipairs(rule.units) do
       unit.blocked = false
-
-      if not self.with[unit:getText()] then
-        self.with[unit:getText()] = {}
-      end
-      table.insert(self.with[unit:getText()], rule)
     end
+
+    local function addToWithTable(word)
+      if not self.with[word.name] then
+        self.with[word.name] = {}
+      end
+      table.insert(self.with[word.name], rule)
+      for _,cond in ipairs(word.conds) do
+        -- idk this might be useless but im adding it nayway
+        addToWithTable(cond)
+      end
+    end
+
+    addToWithTable(rule.subject)
+    addToWithTable(rule.verb)
+    addToWithTable(rule.object)
   end
 end
 

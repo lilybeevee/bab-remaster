@@ -13,9 +13,11 @@ local map = Class{
         self.width = math.max(self.width, i)
         local tiles = type(tile) == "table" and tile or {tile}
         for _,tile in ipairs(tiles) do
-          local data = Assets.unitData(tile)
+          local tile_args = tile:split("|")
+          local data = Assets.unitData(tile_args[1])
+          local dir = Facing[tile_args[2]] or Facing.RIGHT
           if data then
-            table.insert(self.units, {x = i-1, y = j-1, data = data})
+            table.insert(self.units, {x = i-1, y = j-1, dir = dir, data = data})
           end
         end
       end

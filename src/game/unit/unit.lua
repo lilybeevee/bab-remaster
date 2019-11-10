@@ -7,7 +7,7 @@ local unit = Class{
       x, y  = self.x, self.y,
       angle = self.dir.angle
     }, {__call = function(_, self, ...) self:_draw(...) end})
-    
+
     self.moves = {}
   end,
 
@@ -71,9 +71,11 @@ function unit:_draw(palette)
     love.graphics.setColor(self:getDrawColor(palette, i))
 
     love.graphics.push()
-    love.graphics.translate(sprite:getWidth()/2, sprite:getHeight()/2)
-    love.graphics.rotate(math.rad(self.draw.angle))
-    love.graphics.translate(-sprite:getWidth()/2, -sprite:getHeight()/2)
+    if self.rotate then
+      love.graphics.translate(sprite:getWidth()/2, sprite:getHeight()/2)
+      love.graphics.rotate(math.rad(self.draw.angle))
+      love.graphics.translate(-sprite:getWidth()/2, -sprite:getHeight()/2)
+    end
 
     love.graphics.draw(sprite)
 

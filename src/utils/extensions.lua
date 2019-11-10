@@ -39,12 +39,25 @@ function table.copy(table, deep)
   return setmetatable(new_table, getmetatable(table))
 end
 
-function table.dump(tbl, deep)
+function table.dump(tbl, o)
   if tbl == nil then return "nil" end
+  local function indent()
+    local str = ""
+    for i = 1, (o.indent or 0) do
+      str = str .. " "
+    end
+    return str
+  end
   local str = "{"
   for k,v in pairs(tbl) do
     if str ~= "{" then
       str = str .. ", "
+      if o.pretty then
+        str = str .. "\n" .. indent()
+      end
+    elseif o.pretty then
+      o.indent = (o.indent or 0) + 2
+      str = str .. "\n" .. indent()
     end
     if type(k) == "table" then
       str = str .. "(table)" .. " = "
@@ -52,14 +65,18 @@ function table.dump(tbl, deep)
       str = str .. k .. " = "
     end
     if type(v) == "table" and v.dump then
-      str = str .. v:dump(deep)
-    elseif type(v) == "table" and deep then
-      str = str .. table.dump(v, true)
+      str = str .. v:dump(o)
+    elseif type(v) == "table" and o.deep then
+      str = str .. table.dump(v, o)
     elseif type(v) == "string" then
       str = str .. '"' .. v .. '"'
     else
       str = str .. tostring(v)
     end
+  end
+  if o.pretty and str ~= "{" then
+    o.indent = o.indent - 2
+    str = str .. "\n" .. indent()
   end
   str = str .. "}"
   return str
