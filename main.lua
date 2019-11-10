@@ -25,10 +25,10 @@ Rules = require "src.game.rules"
 function love.load(args)
   --Rules.parse = utils.performance.test(Rules.parse, "parse")
   --utils.words.compare = utils.performance.test(utils.words.compare, "compare")
-
+  
   love.window.setTitle("bab be u - remasteredddd")
   love.graphics.setDefaultFilter("nearest","nearest")
-
+  print("lily's the best <3")
   Assets.load()
 
   -- Assign Love2D events to the GameState system

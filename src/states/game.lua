@@ -3,7 +3,7 @@ local game = {}
 game.movement = require "src.game.movement"
 
 function game:enter()
-  self.world = World(Map("nttest"))
+  self.world = World(Map("movetest"))
 
   self.rules = Rules(self.world)
   self.rules:parse()

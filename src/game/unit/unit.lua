@@ -58,7 +58,7 @@ end
 
 function unit:getLayer()
   if self.is_text then
-    return self.layer + 20
+    return self.layer or 20
   else
     return self.layer
   end
@@ -101,6 +101,14 @@ function unit:getDrawColor(palette, index)
   end
 
   return unpack(color)
+end
+
+function unit:hasProperty(prop)
+  return #game.rules:match(self, "be", prop) > 0
+end
+
+function unit:hasRule(verb, prop)
+  return #game.rules:match(self, verb, prop) > 0
 end
 
 function unit:dump()

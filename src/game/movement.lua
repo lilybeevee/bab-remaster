@@ -7,14 +7,16 @@ function movement.doMove(x, y)
 
   --[[
     Stage 1: U
+    Stage 2: WALK
   ]]
-  for move_stage = 1, 1 do
+  for move_stage = 1, 2 do
     local moving_units = {}
 
-    local function addMover(unit, move)
+    local function addMover(unit, reason, move)
       move = move or {}
       move.dir = move.dir or unit.dir
       move.times = move.times or 1
+      move.reason = reason
       
       if move.rotate == nil then move.rotate = true end
 
@@ -32,8 +34,13 @@ function movement.doMove(x, y)
       if x ~= 0 or y ~= 0 then
         for _,match in ipairs(game.rules:match(ANY_UNIT,"be","u")) do
           local dir = Facing.fromPos(x, y)
-          addMover(match.units.subject, {dir = dir})
+          addMover(match.units.subject, "u", {dir = dir})
         end
+      end
+    elseif move_stage == 2 then
+      for _,match in ipairs(game.rules:match(ANY_UNIT,"be","walk")) do
+        local walker = match.units.subject
+        addMover(walker, "walk", {dir = walker.dir})
       end
     end
 
@@ -66,14 +73,24 @@ function movement.doMove(x, y)
           -- do the first move
           if #moves > 0 then
             local move = moves[1]
+            
+            local function moveUnit(unit, move)
+              if movement.canMove(unit, move.dir.x, move.dir.y) then
+                movement.addMove(unit, {x = move.dir.x, y = move.dir.y, rotate = move.rotate})
 
-            if movement.canMove(unit, move.dir.x, move.dir.y) then
-              movement.addMove(unit, {x = move.dir.x, y = move.dir.y, rotate = move.rotate})
-
-              successes = successes + 1
-              move.times = move.times - 1
-              something_moved = true
-            end 
+                successes = successes + 1
+                move.times = move.times - 1
+                something_moved = true
+                return true
+              end
+              return false
+            end
+            
+            if not moveUnit(unit, move) and move.reason == "walk" and not unit:hasProperty("stubbn") then
+              move.dir = move.dir:reverse()
+              movement.addMove(unit, {dir = move.dir})
+              moveUnit(unit, move)
+            end
           else
             moving_units[unit] = nil
           end
