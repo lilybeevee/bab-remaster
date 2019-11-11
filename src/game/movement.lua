@@ -161,6 +161,10 @@ function movement.canMove(unit, dx, dy, o)
   if not game.world:inBounds(x, y) then
     return false, {}
   end
+  
+  if #game.world:getUnitsOnTile(x, y, function(unit) return unit:hasProperty("nogo") end) > 0 then
+    return false, {}
+  end
 
   for _,pushed in ipairs(game.world:getUnitsOnTile(x, y, function(unit) return unit:hasProperty("goawaypls") end)) do
     local push_success, push_movers = movement.canMove(pushed, dx, dy)

@@ -1,6 +1,6 @@
 [
-  ["txt_keek","",""],
-  ["txt_be","keek",""],
-  ["txt_walk","",""],
-  ["keek","",""]
+  ["txt_keek","","txt_wal"],
+  ["txt_be","","txt_be"],
+  ["txt_walk","","txt_nogo"],
+  ["keek","","wal"]
 ]
