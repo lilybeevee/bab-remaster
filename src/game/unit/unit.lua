@@ -8,17 +8,17 @@ local unit = Class{
       angle = self.dir.angle
     }, {__call = function(_, self, ...) self:_draw(...) end})
 
-    self.moves = {}
+    self.particles = Particles()
   end,
 
-  data    = {},
-  id      = 0,
-  x, y    = 0, 0,
-  dir     = Facing.RIGHT,
-  draw    = {},
-  active  = false,
-  blocked = false,
-  moves   = {},
+  data      = {},
+  id        = 0,
+  x, y      = 0, 0,
+  dir       = Facing.RIGHT,
+  draw      = {},
+  active    = false,
+  blocked   = false,
+  particles = {},
 
   -- getting key falls back to data if key doesn't exist
   __index = function(self, key)
@@ -64,6 +64,10 @@ function unit:getLayer()
   end
 end
 
+function unit:update()
+  self.particles.count["hearts"] = self:countProperty("qt")
+end
+
 function unit:_draw(palette)
   for i, something in ipairs(self.sprite) do
     local sprite = Assets.sprite("game", something)
@@ -86,6 +90,8 @@ function unit:_draw(palette)
     palette:setColor(2, 2)
     love.graphics.draw(Assets.sprite("game", "misc", "x"))
   end
+
+  self.particles:draw(palette)
 end
 
 function unit:getDrawColor(palette, index)
@@ -105,13 +111,10 @@ function unit:getDrawColor(palette, index)
   return unpack(color)
 end
 
-function unit:hasProperty(prop)
-  return #game.rules:match(self, "be", prop) > 0
-end
-
-function unit:hasRule(verb, prop)
-  return #game.rules:match(self, verb, prop) > 0
-end
+function unit:countRule(verb, prop) return #game.rules:match(self, verb, prop) end
+function unit:countProperty(prop)   return self:countRule("be", prop)          end
+function unit:hasRule(verb, prop)   return self:countRule(verb, prop) > 0      end
+function unit:hasProperty(prop)     return self:countProperty(prop)   > 0      end
 
 function unit:dump()
   return tostring(self)

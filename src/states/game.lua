@@ -3,10 +3,11 @@ local game = {}
 game.movement = require "src.game.movement"
 
 function game:enter()
-  self.world = World(Map("movetest"))
+  self.world = World(Map("bab"))
 
   self.rules = Rules(self.world)
   self.rules:parse()
+  self.world:updateUnits()
 end
 
 function game:draw()
@@ -40,6 +41,7 @@ function game:doTurn(x, y)
 
   self.movement.doMove(x, y)
   self.rules:parse()
+  self.world:updateUnits()
 
   utils.performance.stop()
 end
