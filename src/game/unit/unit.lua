@@ -4,8 +4,10 @@ local unit = Class{
     self.id = id
 
     self.draw = setmetatable({
-      x, y  = self.x, self.y,
-      angle = self.dir.angle
+      x, y    = self.x, self.y,
+      angle   = self.dir.angle,
+      scale_x = 1,
+      scale_y = 1,
     }, {__call = function(_, self, ...) self:_draw(...) end})
 
     self.particles = Particles()
@@ -34,18 +36,66 @@ local unit = Class{
   end
 }
 
-function unit:move(x, y)
+function unit:move(x, y, o)
+  local o = o or {}
+
+  if not o.tween then
+    -- instantly draw at destination
+    self.draw.x = x
+    self.draw.y = y
+  elseif math.abs(self.x - x) < 2 and math.abs(self.y - y) < 2 then
+    -- linear interprolate to destination if adjacent
+    utils.timer.tween(tostring(self)..":move", 0.1, self.draw, {x = x, y = y})
+  else
+    -- fade out and fade in at destination if far apart
+    utils.timer.tween(tostring(self)..":scale_x", 0.05, self.draw, {scale_x = 0}, "linear", function()
+      utils.timer.tween(tostring(self)..":scale_x", 0.05, self.draw, {scale_x = 1})
+    end)
+    utils.timer.after(tostring(self)..":move", 0.05, function()
+      self.draw.x = x
+      self.draw.y = y
+    end)
+  end
+
   self.x = x
   self.y = y
-
-  self.draw.x = self.x
-  self.draw.y = self.y
 end
 
-function unit:turn(dir)
-  self.dir = dir
+function unit:turn(dir, o)
+  local o = o or {}
 
-  self.draw.angle = self.dir.angle
+  if not o.tween or not self.rotate then
+    -- instantly set draw rotation
+    self.draw.angle = dir.angle
+  else
+    -- make sure draw angle is within 0-359 range
+    self.draw.angle = (self.draw.angle % 360)
+
+    local new_angle = dir.angle
+
+    if math.abs(self.dir.angle - new_angle) ~= 180 then
+      -- linear interprolate to target angle
+
+      -- put our target angle close to our current angle
+      if self.draw.angle - new_angle > 180 then
+        new_angle = new_angle + 360
+      elseif new_angle - self.draw.angle > 180 then
+        new_angle = new_angle - 360
+      end
+
+      utils.timer.tween(tostring(self)..":turn", 0.1, self.draw, {angle = new_angle})
+    else
+      -- mirror effect if angle difference is exactly 180 degrees
+      utils.timer.tween(tostring(self)..":scale_x", 0.05, self.draw, {scale_x = 0}, "linear", function()
+        utils.timer.tween(tostring(self)..":scale_x", 0.05, self.draw, {scale_x = 1})
+      end)
+      utils.timer.after(tostring(self)..":turn", 0.05, function()
+        self.draw.angle = new_angle
+      end)
+    end
+  end
+
+  self.dir = dir
 end
 
 function unit:getText()
@@ -75,11 +125,12 @@ function unit:_draw(palette)
     love.graphics.setColor(self:getDrawColor(palette, i))
 
     love.graphics.push()
+    love.graphics.translate(sprite:getWidth()/2, sprite:getHeight()/2)
     if self.rotate then
-      love.graphics.translate(sprite:getWidth()/2, sprite:getHeight()/2)
       love.graphics.rotate(math.rad(self.draw.angle))
-      love.graphics.translate(-sprite:getWidth()/2, -sprite:getHeight()/2)
     end
+    love.graphics.scale(self.draw.scale_x, self.draw.scale_y)
+    love.graphics.translate(-sprite:getWidth()/2, -sprite:getHeight()/2)
 
     love.graphics.draw(sprite)
 

@@ -143,15 +143,15 @@ function movement.applyMoves()
     local x, y = max_x + min_x, max_y + min_y
 
     if x ~= 0 or y ~= 0 then
-      unit:move(unit.x + x, unit.y + y)
+      unit:move(unit.x + x, unit.y + y, {tween = true})
     end
 
     if has_dir then
       -- strictly set turning
-      unit:turn(has_dir)
+      unit:turn(has_dir, {tween = true})
     elseif has_rotate and (x ~= 0 or y ~= 0) then
       -- automatically turn to the closest angle from the movement offset
-      unit:turn(Facing.fromPos(x, y))
+      unit:turn(Facing.fromPos(x, y), {tween = true})
     end
   end
 
