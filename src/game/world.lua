@@ -58,6 +58,12 @@ function world:removeUnit(unit_or_id)
   end
 end
 
+function world:updateUnits()
+  for _,unit in ipairs(self.units) do
+    unit:update()
+  end
+end
+
 function world:getNextId(id)
   if not id then
     self.max_id = self.max_id + 1

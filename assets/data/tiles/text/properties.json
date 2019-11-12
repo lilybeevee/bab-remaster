@@ -75,6 +75,14 @@
     "tags": ["move"]
   },
   {
+    "name": "txt_qt",
+    "sprite": ["text/qt"],
+    "types": ["property"],
+    "color": [[4, 2]],
+    "desc:": "QT: Makes the unit emit love hearts.",
+    "tags": ["cute", "vitellary", "lily"]
+  },
+  {
     "name": "txt_go",
     "sprite": ["text/go"],
     "types": ["property"],
