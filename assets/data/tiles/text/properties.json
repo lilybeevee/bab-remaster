@@ -73,5 +73,13 @@
     "color": [[5, 3]],
     "desc": "WALK: Moves in a straight line each turn, bouncing off walls.",
     "tags": ["move"]
+  },
+  {
+    "name": "txt_go",
+    "sprite": ["text/go"],
+    "types": ["property"],
+    "color": [[1, 3]],
+    "desc": "GO: Forces all other objects in its tile to move in its facing direction.",
+    "tags": ["shift"]
   }
 ]

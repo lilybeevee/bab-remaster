@@ -9,7 +9,7 @@ function movement.doMove(x, y)
     Stage 1: U
     Stage 2: WALK
   ]]
-  for move_stage = 1, 2 do
+  for move_stage = 1, 3 do
     local moving_units = {}
 
     local function addMover(unit, reason, move)
@@ -32,15 +32,20 @@ function movement.doMove(x, y)
         MOVE STAGE 1
       ]]
       if x ~= 0 or y ~= 0 then
-        for _,match in ipairs(game.rules:match(ANY_UNIT,"be","u")) do
+        for _,unit in ipairs(game.world:getUnitsWithProp("u")) do
           local dir = Facing.fromPos(x, y)
-          addMover(match.units.subject, "u", {dir = dir})
+          addMover(unit, "u", {dir = dir})
         end
       end
     elseif move_stage == 2 then
-      for _,match in ipairs(game.rules:match(ANY_UNIT,"be","walk")) do
-        local walker = match.units.subject
-        addMover(walker, "walk", {dir = walker.dir})
+      for _,unit in ipairs(game.world:getUnitsWithProp("walk")) do
+        addMover(unit, "walk", {dir = unit.dir})
+      end
+    elseif move_stage == 3 then
+      for _,unit in ipairs(game.world:getUnitsWithProp("go")) do --TODO: make GO units redirect objects on them after all movement
+        for _,on in ipairs(game.world:getUnitsOnTile(unit.x, unit.y, function(other) return other ~= unit end)) do
+          addMover(on, "go", {dir = unit.dir})
+        end
       end
     end
 

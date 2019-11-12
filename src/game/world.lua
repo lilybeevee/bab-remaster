@@ -90,6 +90,17 @@ function world:getUnitsByName(name, filter)
   end)
 end
 
+function world:getUnitsWithProp(prop, filter)
+  local result = {}
+  for _,match in ipairs(game.rules:match(ANY_UNIT, "be", prop)) do
+    local unit = match.units.subject
+    if not filter or filter(unit) then
+      table.insert(result, unit)
+    end
+  end
+  return result
+end
+
 function world:inBounds(x, y)
   return x >= 0 and y >= 0 and x < self.width and y < self.height
 end
