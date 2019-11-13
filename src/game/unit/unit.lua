@@ -120,8 +120,12 @@ function unit:update()
 end
 
 function unit:_draw(palette)
-  for i, something in ipairs(self.sprite) do
-    local sprite = Assets.sprite("game", something)
+  for i, thing in ipairs(self.sprite) do
+    local sprite = Assets.sprite("game", thing)
+    
+    if self.frames ~= 1 then
+      sprite = Assets.sprite("game", thing .. "_" .. (math.floor(love.timer.getTime()/0.2)%self.frames+1))
+    end
 
     love.graphics.setColor(self:getDrawColor(palette, i))
 

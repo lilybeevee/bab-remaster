@@ -9,6 +9,7 @@ layer
 color
 painted (formerly known as "colored")
 rotate
+frames
 features
 voice
 desc

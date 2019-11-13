@@ -5,7 +5,7 @@ function game:enter()
 end
 
 function game:start()
-  self.world = World(Map("spooptest"))
+  self.world = World(Map("bab"))
 
   self.world.rules:parse()
   self.world:updateUnits()

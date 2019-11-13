@@ -28,6 +28,7 @@ local unitdata = Class{
   color = {0, 3},
   painted = {true},
   rotate = false,
+  frames = 1,
   layer = 1,
 }
 

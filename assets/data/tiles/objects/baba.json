@@ -251,5 +251,13 @@
     "sprite": ["text/tre"],
     "types": ["object"],
     "color": [[5, 2]]
+  },
+  {
+    "name": "baba",
+    "sprite": ["baba"],
+    "layer": 11,
+    "color": [[0, 3]],
+    "rotate": true,
+    "frames": 3,
   }
 ]
