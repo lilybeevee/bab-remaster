@@ -3,7 +3,11 @@ local game = {}
 game.movement = require "src.game.movement"
 
 function game:enter()
-  self.world = World(Map("bab"))
+  self:start()
+end
+
+function game:start()
+  self.world = World(Map("spooptest"))
 
   self.rules = Rules(self.world)
   self.rules:parse()
@@ -33,6 +37,8 @@ function game:keypressed(key)
     self:doTurn(1, -1)
   elseif key == "space" then
     self:doTurn(0, 0)
+  elseif key == "r" then
+    self:start()
   end
 end
 

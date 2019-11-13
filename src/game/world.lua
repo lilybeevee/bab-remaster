@@ -96,15 +96,19 @@ function world:getUnitsByName(name, filter)
   end)
 end
 
-function world:getUnitsWithProp(prop, filter)
+function world:getUnitsWithRule(verb, object, filter)
   local result = {}
-  for _,match in ipairs(game.rules:match(ANY_UNIT, "be", prop)) do
+  for _,match in ipairs(game.rules:match(ANY_UNIT, verb, object)) do
     local unit = match.units.subject
     if not filter or filter(unit) then
       table.insert(result, unit)
     end
   end
   return result
+end
+
+function world:getUnitsWithProp(prop, filter)
+  return self:getUnitsWithRule("be", prop, filter)
 end
 
 function world:inBounds(x, y)

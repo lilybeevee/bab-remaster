@@ -14,5 +14,13 @@
     "color": [[0, 3]],
     "desc": "GOT (Verb): Causes the subject to drop the object when destroyed.",
     "tags": ["has"]
+  },
+  {
+    "name": "txt_spoop",
+    "sprite": ["text/spoop"],
+    "types": ["verb", "verb_unit"],
+    "color": [[2, 2]],
+    "desc": "SPOOP (Verb): A SPOOPY unit forces all objects it SPOOPS on adjacent tiles to move away!",
+    "tags": ["fear", "spook"]
   }
 ]

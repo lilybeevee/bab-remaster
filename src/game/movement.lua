@@ -6,10 +6,12 @@ function movement.doMove(x, y)
   movement.move_queue = {}
 
   --[[
-    Stage 1: U
-    Stage 2: WALK
+    Stage 1: ICY, ICYYYY
+    Stage 2: U, U TOO, U TRES, Y'ALL
+    Stage 3: SPOOP, WALK, MOOV (DIR), STALK
+    Stage 4: YEET, GO, GOOOO, MOOV
   ]]
-  for move_stage = 1, 3 do
+  for move_stage = 1, 4 do
     local moving_units = {}
 
     local function addMover(unit, reason, move)
@@ -28,20 +30,37 @@ function movement.doMove(x, y)
       Add all moving units for this stage
     ]]
     if move_stage == 1 then
-      --[[
-        MOVE STAGE 1
-      ]]
+
+    elseif move_stage == 2 then
       if x ~= 0 or y ~= 0 then
-        for _,unit in ipairs(game.world:getUnitsWithProp("u")) do
+        -- U
+        for _,unit in ipairs(game.world:getUnitsWithProp("u", function(unit) return not unit:hasProperty("slep") end)) do
           local dir = Facing.fromPos(x, y)
           addMover(unit, "u", {dir = dir})
         end
       end
-    elseif move_stage == 2 then
-      for _,unit in ipairs(game.world:getUnitsWithProp("walk")) do
-        addMover(unit, "walk", {dir = unit.dir})
-      end
     elseif move_stage == 3 then
+      -- SPOOP
+      for _,match in ipairs(game.rules:match(ANY_UNIT, "spoop", ANY_UNIT)) do
+        local spooper = match.units.subject
+        local spooped = match.units.object
+
+        local dx, dy = spooped.x - spooper.x, spooped.y - spooper.y
+
+        if math.abs(dx) <= 1 and math.abs(dy) <= 1 and not spooped:hasProperty("slep") then
+          if dx == 0 and dy == 0 then
+            addMover(spooped, "spoop", {dir = spooper.dir, flip = true})
+          else
+            addMover(spooped, "spoop", {dir = Facing.fromPos(dx, dy)})
+          end
+        end
+      end
+      -- WALK
+      for _,unit in ipairs(game.world:getUnitsWithProp("walk", function(unit) return not unit:hasProperty("slep") end)) do
+        addMover(unit, "walk", {dir = unit.dir, flip = true})
+      end
+    elseif move_stage == 4 then
+      -- GO
       for _,unit in ipairs(game.world:getUnitsWithProp("go")) do --TODO: make GO units redirect objects on them after all movement
         for _,on in ipairs(game.world:getUnitsOnTile(unit.x, unit.y, function(other) return other ~= unit end)) do
           addMover(on, "go", {dir = unit.dir})
@@ -94,7 +113,7 @@ function movement.doMove(x, y)
               return success
             end
             
-            if not moveUnit(unit, move) and move.reason == "walk" and not unit:hasProperty("stubbn") then
+            if not moveUnit(unit, move) and move.flip and not unit:hasProperty("stubbn") then
               move.dir = move.dir:reverse()
               movement.addMove(unit, {dir = move.dir})
               moveUnit(unit, move)
