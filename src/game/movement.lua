@@ -1,9 +1,12 @@
-local movement = {}
+local movement = Class{
+  init = function(self, world)
+    self.world = world
+    self.queue = {}
+  end
+}
 
-movement.move_queue = {}
-
-function movement.doMove(x, y)
-  movement.move_queue = {}
+function movement:move(x, y)
+  self.queue = {}
 
   --[[
     Stage 1: ICY, ICYYYY
@@ -34,14 +37,14 @@ function movement.doMove(x, y)
     elseif move_stage == 2 then
       if x ~= 0 or y ~= 0 then
         -- U
-        for _,unit in ipairs(game.world:getUnitsWithProp("u", function(unit) return not unit:hasProperty("slep") end)) do
+        for _,unit in ipairs(self.world:getUnitsWithProp("u", function(unit) return not unit:hasProperty("slep") end)) do
           local dir = Facing.fromPos(x, y)
           addMover(unit, "u", {dir = dir})
         end
       end
     elseif move_stage == 3 then
       -- SPOOP
-      for _,match in ipairs(game.rules:match(ANY_UNIT, "spoop", ANY_UNIT)) do
+      for _,match in ipairs(self.world.rules:match(ANY_UNIT, "spoop", ANY_UNIT)) do
         local spooper = match.units.subject
         local spooped = match.units.object
 
@@ -56,13 +59,13 @@ function movement.doMove(x, y)
         end
       end
       -- WALK
-      for _,unit in ipairs(game.world:getUnitsWithProp("walk", function(unit) return not unit:hasProperty("slep") end)) do
+      for _,unit in ipairs(self.world:getUnitsWithProp("walk", function(unit) return not unit:hasProperty("slep") end)) do
         addMover(unit, "walk", {dir = unit.dir, flip = true})
       end
     elseif move_stage == 4 then
       -- GO
-      for _,unit in ipairs(game.world:getUnitsWithProp("go")) do --TODO: make GO units redirect objects on them after all movement
-        for _,on in ipairs(game.world:getUnitsOnTile(unit.x, unit.y, function(other) return other ~= unit end)) do
+      for _,unit in ipairs(self.world:getUnitsWithProp("go")) do --TODO: make GO units redirect objects on them after all movement
+        for _,on in ipairs(self.world:getUnitsOnTile(unit.x, unit.y, function(other) return other ~= unit end)) do
           addMover(on, "go", {dir = unit.dir})
         end
       end
@@ -99,11 +102,11 @@ function movement.doMove(x, y)
             local move = moves[1]
             
             local function moveUnit(unit, move)
-              local success, movers = movement.canMove(unit, move.dir.x, move.dir.y)
+              local success, movers = self:canMove(unit, move.dir.x, move.dir.y)
               if success then
-                movement.addMove(unit, {x = move.dir.x, y = move.dir.y, rotate = move.rotate})
+                self:addMove(unit, {x = move.dir.x, y = move.dir.y, rotate = move.rotate})
                 for _,mover in ipairs(movers) do
-                  movement.addMove(mover, {x = move.dir.x, y = move.dir.y, rotate = true})
+                  self:addMove(mover, {x = move.dir.x, y = move.dir.y, rotate = true})
                 end
 
                 successes = successes + 1
@@ -115,7 +118,7 @@ function movement.doMove(x, y)
             
             if not moveUnit(unit, move) and move.flip and not unit:hasProperty("stubbn") then
               move.dir = move.dir:reverse()
-              movement.addMove(unit, {dir = move.dir})
+              self:addMove(unit, {dir = move.dir})
               moveUnit(unit, move)
             end
           else
@@ -124,18 +127,18 @@ function movement.doMove(x, y)
         end
       end
 
-      movement.applyMoves()
+      self:applyMoves()
     end
   end
 end
 
-function movement.addMove(unit, move)
-  movement.move_queue[unit] = movement.move_queue[unit] or {}
-  table.insert(movement.move_queue[unit], move)
+function movement:addMove(unit, move)
+  self.queue[unit] = self.queue[unit] or {}
+  table.insert(self.queue[unit], move)
 end
 
-function movement.applyMoves()
-  for unit,moves in pairs(movement.move_queue) do
+function movement:applyMoves()
+  for unit,moves in pairs(self.queue) do
     -- sum up simultaneous movements using the max value in each direction
     local max_x, max_y = 0, 0
     local min_x, min_y = 0, 0
@@ -174,24 +177,24 @@ function movement.applyMoves()
     end
   end
 
-  movement.move_queue = {}
+  self.queue = {}
 end
 
-function movement.canMove(unit, dx, dy, o)
+function movement:canMove(unit, dx, dy, o)
   o = o or {}
   local movers = {}
   local x, y = unit.x + dx, unit.y + dy
 
-  if not game.world:inBounds(x, y) then
+  if not self.world:inBounds(x, y) then
     return false, {}
   end
   
-  if #game.world:getUnitsOnTile(x, y, function(unit) return unit:hasProperty("nogo") end) > 0 then
+  if #self.world:getUnitsOnTile(x, y, function(unit) return unit:hasProperty("nogo") end) > 0 then
     return false, {}
   end
 
-  for _,pushed in ipairs(game.world:getUnitsOnTile(x, y, function(unit) return unit:hasProperty("goawaypls") end)) do
-    local push_success, push_movers = movement.canMove(pushed, dx, dy)
+  for _,pushed in ipairs(self.world:getUnitsOnTile(x, y, function(unit) return unit:hasProperty("goawaypls") end)) do
+    local push_success, push_movers = self:canMove(pushed, dx, dy)
     if push_success then
       table.insert(movers, pushed)
       table.merge(movers, push_movers)

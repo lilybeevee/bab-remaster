@@ -1,5 +1,6 @@
 local unit = Class{
-  init = function(self, data, id)
+  init = function(self, world, data, id)
+    self.world = world
     self.data = data
     self.id = id
 
@@ -162,7 +163,7 @@ function unit:getDrawColor(palette, index)
   return unpack(color)
 end
 
-function unit:countRule(verb, prop) return #game.rules:match(self, verb, prop) end
+function unit:countRule(verb, prop) return #self.world.rules:match(self, verb, prop) end
 function unit:countProperty(prop)   return self:countRule("be", prop)          end
 function unit:hasRule(verb, prop)   return self:countRule(verb, prop) > 0      end
 function unit:hasProperty(prop)     return self:countProperty(prop)   > 0      end

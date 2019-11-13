@@ -1,7 +1,5 @@
 local game = {}
 
-game.movement = require "src.game.movement"
-
 function game:enter()
   self:start()
 end
@@ -9,8 +7,7 @@ end
 function game:start()
   self.world = World(Map("spooptest"))
 
-  self.rules = Rules(self.world)
-  self.rules:parse()
+  self.world.rules:parse()
   self.world:updateUnits()
 end
 
@@ -45,8 +42,8 @@ end
 function game:doTurn(x, y)
   utils.performance.start()
 
-  self.movement.doMove(x, y)
-  self.rules:parse()
+  self.world.movement:move(x, y)
+  self.world.rules:parse()
   self.world:updateUnits()
 
   utils.performance.stop()

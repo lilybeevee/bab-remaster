@@ -12,6 +12,8 @@ local world = Class{
       end
     end
 
+    self.rules = Rules(self)
+    self.movement = Movement(self)
     self.palette = Assets.palette("default")
   end,
 
@@ -27,7 +29,7 @@ local world = Class{
 function world:createUnit(x, y, dir, data, o)
   o = o or {}
 
-  local unit = Unit(data, self:getNextId(o.id))
+  local unit = Unit(self, data, self:getNextId(o.id))
   unit:move(x, y, {immediate = true})
   unit:turn(dir, {immediate = true})
 
@@ -98,7 +100,7 @@ end
 
 function world:getUnitsWithRule(verb, object, filter)
   local result = {}
-  for _,match in ipairs(game.rules:match(ANY_UNIT, verb, object)) do
+  for _,match in ipairs(self.rules:match(ANY_UNIT, verb, object)) do
     local unit = match.units.subject
     if not filter or filter(unit) then
       table.insert(result, unit)

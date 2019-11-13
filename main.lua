@@ -21,6 +21,7 @@ UnitData = require "src.game.unit.unitdata"
 Unit = require "src.game.unit.unit"
 parser = require "src.game.parser"
 Rules = require "src.game.rules"
+Movement = require "src.game.movement"
 Particles = require "src.game.particles"
 
 function love.load(args)
