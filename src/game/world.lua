@@ -12,9 +12,13 @@ local world = Class{
       end
     end
 
-    self.rules = Rules(self)
-    self.movement = Movement(self)
     self.palette = Assets.palette("default")
+
+    -- various ,, game stuff
+    self.rules = RuleParser(self)
+    self.movement = MoveManager(self)
+    self.updates = UpdateManager(self)
+    self.particles = ParticleSystem(self)
   end,
 
   palette = nil,
@@ -57,12 +61,6 @@ function world:removeUnit(unit_or_id)
 
   if self.units_by_name[unit.name] then
     table.remove_value(self.units_by_name[unit.name], unit)
-  end
-end
-
-function world:updateUnits()
-  for _,unit in ipairs(self.units) do
-    unit:update()
   end
 end
 
@@ -144,6 +142,8 @@ function world:draw()
     unit:draw(self.palette)
     love.graphics.pop()
   end
+
+  self.particles:draw()
 
   love.graphics.pop()
 end

@@ -8,7 +8,7 @@ function game:start()
   self.world = World(Map("bab"))
 
   self.world.rules:parse()
-  self.world:updateUnits()
+  self.world.updates:applyVisuals()
 end
 
 function game:draw()
@@ -44,7 +44,7 @@ function game:doTurn(x, y)
 
   self.world.movement:move(x, y)
   self.world.rules:parse()
-  self.world:updateUnits()
+  self.world.updates:applyVisuals()
 
   utils.performance.stop()
 end

@@ -48,7 +48,7 @@ function rules:parse()
 
   print("-----[parsed]------")
   for i,rule in ipairs(self) do
-    print("Has rule: " .. Rules.serialize(rule))
+    print("Has rule: " .. rules.serialize(rule))
   end
 end
 

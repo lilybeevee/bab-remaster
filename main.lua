@@ -20,9 +20,10 @@ Facing = require "src.game.facing"
 UnitData = require "src.game.unit.unitdata"
 Unit = require "src.game.unit.unit"
 parser = require "src.game.parser"
-Rules = require "src.game.rules"
-Movement = require "src.game.movement"
-Particles = require "src.game.particles"
+RuleParser = require "src.game.rules"
+MoveManager = require "src.game.movement"
+UpdateManager = require "src.game.updates"
+ParticleSystem = require "src.game.particles"
 
 function love.load(args)
   --Rules.parse = utils.performance.test(Rules.parse, "parse")

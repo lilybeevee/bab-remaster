@@ -10,8 +10,6 @@ local unit = Class{
       scale_x = 1,
       scale_y = 1,
     }, {__call = function(_, self, ...) self:_draw(...) end})
-
-    self.particles = Particles()
   end,
 
   data      = {},
@@ -21,7 +19,6 @@ local unit = Class{
   draw      = {},
   active    = false,
   blocked   = false,
-  particles = {},
 
   -- getting key falls back to data if key doesn't exist
   __index = function(self, key)
@@ -115,11 +112,7 @@ function unit:getLayer()
   end
 end
 
-function unit:update()
-  self.particles.count["hearts"] = self:countProperty("qt")
-end
-
-function unit:_draw(palette)
+function unit:_draw()
   for i, thing in ipairs(self.sprite) do
     local sprite = Assets.sprite("game", thing)
     
@@ -127,7 +120,7 @@ function unit:_draw(palette)
       sprite = Assets.sprite("game", thing .. "_" .. (math.floor(love.timer.getTime()/0.2)%self.frames+1))
     end
 
-    love.graphics.setColor(self:getDrawColor(palette, i))
+    love.graphics.setColor(self:getDrawColor(i))
 
     love.graphics.push()
     love.graphics.translate(sprite:getWidth()/2, sprite:getHeight()/2)
@@ -143,23 +136,21 @@ function unit:_draw(palette)
   end
 
   if self.blocked then
-    palette:setColor(2, 2)
+    self.world.palette:setColor(2, 2)
     love.graphics.draw(Assets.sprite("game", "misc", "x"))
   end
-
-  self.particles:draw(palette)
 end
 
-function unit:getDrawColor(palette, index)
+function unit:getDrawColor(index)
   index = index or 1
-  local color = {palette(self.color[index])}
+  local color = {self.world.palette(self.color[index])}
   local brightness = 1
 
   if not self.active and self.is_text then
     brightness = 0.33
   end
 
-  local bg = {palette(0, 4)}
+  local bg = {self.world.palette(0, 4)}
   for i = 1, 3 do
     color[i] = (1 - brightness) * (bg[i] * 0.5) + brightness * color[i]
   end
