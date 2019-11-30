@@ -1,6 +1,6 @@
 [
   ["txt_keek","","","txt_bab"],
   ["txt_be","","","txt_be"],
-  ["txt_u","bab|UP_LEFT","bab|UP_LEFT","txt_go"],
+  ["txt_u","bab|upleft","bab|upleft","txt_go"],
   ["keek","","",""]
 ]

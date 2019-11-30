@@ -2,7 +2,7 @@
   ["","","txt_bab","txt_spoop","txt_keek","",""],
   ["","","","","","",""],
   ["","","keek","","keek","",""],
-  ["","","keek",["bab","keek|UP","keek|DOWN_LEFT"],"","",""],
+  ["","","keek",["bab","keek|up","keek|downleft"],"","",""],
   ["","","","keek","keek","",""],
   ["","","","","","",""],
   ["","","txt_bab","txt_be","txt_u","",""]

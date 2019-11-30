@@ -5,7 +5,12 @@ utimer.timers = {}
 function utimer.stop(id)
   if utimer.timers[id] then
     Timer.cancel(utimer.timers[id])
+    utimer.timers[id] = nil
   end
+end
+
+function utimer.exists(id)
+  return utimer.timers[id] ~= nil and utimer.timers[id].count > 0
 end
 
 function utimer.after(id, ...)

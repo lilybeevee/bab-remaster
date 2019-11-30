@@ -20,7 +20,10 @@ local map = Class{
           for _,tile in ipairs(tiles) do
             local tile_args = tile:split("|")
             local data = Assets.unitData(tile_args[1])
-            local dir = Facing[tile_args[2]] or Facing.RIGHT
+            local dir = Facing.RIGHT
+            if tile_args[2] then
+              dir = Facing.fromName(tile_args[2]) or Facing.RIGHT
+            end
             if data then
               table.insert(self.units, {x = i-1, y = j-1, dir = dir, data = data})
             end

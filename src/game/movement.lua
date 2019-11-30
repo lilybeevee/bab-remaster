@@ -5,7 +5,7 @@ local movement = Class{
   end
 }
 
-function movement:move(x, y)
+function movement:move(x, y, player)
   self.queue = {}
 
   --[[

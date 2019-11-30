@@ -89,6 +89,10 @@ function table.contains(tbl, val)
   return false
 end
 
+function table.equals(a, b)
+  return table.dump(a, {deep = true}) == table.dump(b, {deep = true})
+end
+
 function table.merge(tbl, other)
   if tbl == nil or other == nil then return tbl end
   for k,v in pairs(other) do
