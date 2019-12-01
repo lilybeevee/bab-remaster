@@ -23,32 +23,23 @@ function game:update(dt)
     local x, y = Input.get("move (p"..i..")"):xy()
     local last_x, last_y = unpack(self.last_moves[i] or {0, 0})
 
-    local timer = self.input_timers[i]
-
-    if last_x ~= x or last_y ~= y then
-      if not timer or timer.time > self.MOVE_BUFFER then
-        if x ~= 0 or y ~= 0 then
-          timer = {x = x, y = y, time = self.MOVE_BUFFER}
-          self.input_timers[i] = timer
-        else
-          timer = nil
-          self.input_timers[i] = nil
-        end
-      elseif timer.time <= self.MOVE_BUFFER and (x ~= 0 or y ~= 0) then
-        timer.x = x
-        timer.y = y
-        timer.time = 0
-      else
-        timer = nil
-        self.input_timers[i] = nil
+    if (math.abs(x) > math.abs(last_x) or math.abs(y) > math.abs(last_y)) and (x ~= 0 or y ~= 0) then
+      if not self.input_timers[i] or self.input_timers[i] > self.MOVE_BUFFER then
+        self.input_timers[i] = self.MOVE_BUFFER
+      elseif self.input_timers[i] <= self.MOVE_BUFFER then
+        self.input_timers[i] = 0
       end
     end
 
-    if timer then
-      timer.time = timer.time - dt
-      if timer.time <= 0 then
-        self:doTurn(timer.x, timer.y, i)
-        timer.time = self.MOVE_REPEAT
+    if self.input_timers[i] then
+      self.input_timers[i] = self.input_timers[i] - dt
+      if self.input_timers[i] <= 0 then
+        if x ~= 0 or y ~= 0 then
+          self:doTurn(x, y, i)
+          self.input_timers[i] = self.input_timers[i] + self.MOVE_REPEAT
+        else
+          self.input_timers[i] = nil
+        end
       end
     end
 
