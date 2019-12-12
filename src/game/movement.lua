@@ -195,8 +195,6 @@ function movement:canMove(unit, dx, dy, o)
       if pull_success then
         table.insert(movers, unit)
         table.merge(movers, pull_movers)
-      else
-        return false, {}
       end
     end
   end
