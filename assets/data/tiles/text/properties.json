@@ -24,6 +24,14 @@
     "tags": ["push"]
   },
   {
+    "name": "txt_comepls",
+    "sprite": ["text/comepls"],
+    "types": ["property"],
+    "color": [[6, 1]],
+    "desc": "COME PLS: Pulled by movement on adjacent tiles facing away from this unit.",
+    "tags": ["pull"]
+  },
+  {
     "name": "txt_nedkee",
     "sprite": ["text/nedkee"],
     "types": ["property"],

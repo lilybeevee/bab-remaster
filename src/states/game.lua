@@ -12,7 +12,7 @@ function game:enter()
 end
 
 function game:start()
-  self.world = World(Map("bab"))
+  self.world = World(Map("pulltest"))
 
   self.world.rules:parse()
   self.world.updates:applyVisuals()

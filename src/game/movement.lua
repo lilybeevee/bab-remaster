@@ -188,17 +188,39 @@ function movement:canMove(unit, dx, dy, o)
   if not self.world:inBounds(x, y) then
     return false, {}
   end
-  
-  if #self.world:getUnitsOnTile(x, y, function(unit) return unit:hasProperty("nogo") end) > 0 then
-    return false, {}
+
+  for _,unit in ipairs(self.world:getUnitsOnTile(unit.x - dx, unit.y - dy)) do
+    if unit:hasProperty("comepls") then
+      local pull_success, pull_movers = self:canMove(unit, dx, dy, {pulling = true})
+      if pull_success then
+        table.insert(movers, unit)
+        table.merge(movers, pull_movers)
+      else
+        return false, {}
+      end
+    end
   end
 
-  for _,pushed in ipairs(self.world:getUnitsOnTile(x, y, function(unit) return unit:hasProperty("goawaypls") end)) do
-    local push_success, push_movers = self:canMove(pushed, dx, dy)
-    if push_success then
-      table.insert(movers, pushed)
-      table.merge(movers, push_movers)
-    else
+  if o.pulling then
+    return true, movers
+  end
+
+  for _,unit in ipairs(self.world:getUnitsOnTile(x, y)) do
+    if unit:hasProperty("nogo") then
+      return false, {}
+    end
+
+    if unit:hasProperty("goawaypls") then
+      local push_success, push_movers = self:canMove(unit, dx, dy)
+      if push_success then
+        table.insert(movers, unit)
+        table.merge(movers, push_movers)
+      else
+        return false, {}
+      end
+    end
+
+    if unit:hasProperty("comepls") then
       return false, {}
     end
   end
