@@ -37,14 +37,14 @@ function movement:move(x, y, player)
     elseif move_stage == 2 then
       if x ~= 0 or y ~= 0 then
         -- U
-        for _,unit in ipairs(self.world:getUnitsWithProp("u", function(unit) return not unit:hasProperty("slep") end)) do
+        for _,unit in ipairs(self.world:getUnitsWithProp("u", function(unit) return not unit:hasProperty("slep") end, {oob = true})) do
           local dir = Facing.fromPos(x, y)
           addMover(unit, "u", {dir = dir})
         end
       end
     elseif move_stage == 3 then
       -- SPOOP
-      for _,match in ipairs(self.world.rules:match(ANY_UNIT, "spoop", ANY_UNIT)) do
+      for _,match in ipairs(self.world.rules:match(ANY_UNIT, "spoop", ANY_UNIT, {oob = true})) do
         local spooper = match.units.subject
         local spooped = match.units.object
 
@@ -59,12 +59,12 @@ function movement:move(x, y, player)
         end
       end
       -- WALK
-      for _,unit in ipairs(self.world:getUnitsWithProp("walk", function(unit) return not unit:hasProperty("slep") end)) do
+      for _,unit in ipairs(self.world:getUnitsWithProp("walk", function(unit) return not unit:hasProperty("slep") end, {oob = true})) do
         addMover(unit, "walk", {dir = unit.dir, flip = true})
       end
     elseif move_stage == 4 then
       -- GO
-      for _,unit in ipairs(self.world:getUnitsWithProp("go")) do --TODO: make GO units redirect objects on them after all movement
+      for _,unit in ipairs(self.world:getUnitsWithProp("go", nil, {oob = true})) do --TODO: make GO units redirect objects on them after all movement
         for _,on in ipairs(self.world:getUnitsOnTile(unit.x, unit.y, function(other) return other ~= unit end)) do
           addMover(on, "go", {dir = unit.dir})
         end
@@ -185,7 +185,7 @@ function movement:canMove(unit, dx, dy, o)
   local movers = {}
   local x, y = unit.x + dx, unit.y + dy
 
-  if not self.world:inBounds(x, y) then
+  if not self.world.referenced_objects["bordr"] and not self.world:inBounds(x, y) then
     return false, {}
   end
 

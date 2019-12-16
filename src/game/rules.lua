@@ -27,6 +27,7 @@ function rules:parse()
   self:clear()
 
   self:addBase("txt", "be", "goawaypls")
+  self:addBase("bordr", "be", "nogo")
 
   local text_units = self.world:getUnits(function(unit) return unit.is_text end)
   for _,unit in ipairs(text_units) do
@@ -108,7 +109,9 @@ end
   should be self explanatory but for you old babbers:
     rules:match(ANY_UNIT,"be",ANY_WORD) == matchesRule(nil,"be","?")
 ]]
-function rules:match(subject, verb, object)
+function rules:match(subject, verb, object, o)
+  o = o or {}
+
   -- simple match cacheing for if the same match is done multiple times
   local cached = self.cache[tostring(subject)..","..tostring(verb)..","..tostring(object)]
   if cached then return cached end
@@ -171,12 +174,9 @@ function rules:match(subject, verb, object)
       -- find wildcard units for subject
       if subject == ANY_UNIT then
         -- loop through all units in the world with the subject name
-        for _,unit in ipairs(self.world:getUnitsByName(rule.subject.name)) do
-          -- test conditions before adding
-          if rules.testConds(rule.subject.conds, unit, self.world) then
-            table.insert(matched_subjects, unit)
-          end
-        end
+        table.merge(matched_subjects, self.world:getUnitsByName(rule.subject.name, function(unit)
+          return rules.testConds(rule.subject.conds, unit, self.world)
+        end, {oob = #rule.subject.conds > 0 or o.oob}))
         -- stop matching if no units found
         if #matched_subjects == 0 then matched = false end
       end
@@ -184,12 +184,9 @@ function rules:match(subject, verb, object)
       -- find wildcard units for object
       if object == ANY_UNIT then
         -- otherwise, loop through all units in the world with the object name
-        for _,unit in ipairs(self.world:getUnitsByName(rule.object.name)) do
-          -- test conditions before adding
-          if rules.testConds(rule.object.conds, unit, self.world) then
-            table.insert(matched_objects, unit)
-          end
-        end
+        table.merge(matched_objects, self.world:getUnitsByName(rule.object.name, function(unit)
+          return rules.testConds(rule.object.conds, unit, self.world)
+        end, {oob = #rule.object.conds > 0 or o.oob}))
         -- stop matching if no units found
         if #matched_objects == 0 then matched = false end
       end
@@ -249,7 +246,7 @@ function rules:final()
   local function getNtCount(rule)
     local count, verb = utils.words.getNtCount(rule.verb.name)
     -- special case: 'x be notranform' needs to be above 'x be y' but below 'x ben't y'
-    if count == 0 and rule.verb.name == "be" and rule.object.name == "notranform" then
+    if count == 0 and rule.verb.name == "be" and (rule.object.name == "notranform" or rule.object.name == rule.subject.name) then
       -- but we're sorting by count and 'x ben't y' has a count of 1
       -- which is directly above 'x be y' with a count of 0...
       -- SO WE USE A DECIMAL BC WHY NOT YOU CANT STOP ME NYAHAHAHAA
@@ -486,7 +483,7 @@ function rules.getSentences(world)
   local sentences = {}
   local found = {}
   local dirs = {Facing.RIGHT, Facing.DOWN_RIGHT, Facing.DOWN}
-  for _,first in ipairs(world.units) do
+  for _,first in pairs(world:getUnits(isText, {oob = true})) do
     if not found[first.x..","..first.y] then
       found[first.x..","..first.y] = true
       for _,dir in ipairs(dirs) do

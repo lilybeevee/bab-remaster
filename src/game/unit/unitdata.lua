@@ -22,10 +22,10 @@ local unitdata = Class{
 
   id = "unit",
   name = "unit",
-  sprite = "wat",
+  sprite = {"wat"},
   is_text = false,
   types = {object = true},
-  color = {0, 3},
+  color = {{0, 3}},
   painted = {true},
   rotate = false,
   frames = 1,

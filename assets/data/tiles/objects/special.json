@@ -12,5 +12,19 @@
     "color": [[3, 3]],
     "desc": "MOUS: Refers to the mouse cursor. You can create, destroy and apply properties to mouse cursors!",
     "tags": ["mouse", "cursor"]
+  },
+  {
+    "name": "bordr",
+    "sprite": ["bordr"],
+    "layer": 1,
+    "color": [[1, 0]],
+    "desc": "BORDR: OOB you can place manually. NOGO, TALL and BORDR by default.",
+    "tags": ["border"]
+  },
+  {
+    "name": "txt_bordr",
+    "sprite": ["text/bordr"],
+    "types": ["object"],
+    "color": [[2, 0]]
   }
 ]

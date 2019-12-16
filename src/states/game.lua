@@ -12,7 +12,7 @@ function game:enter()
 end
 
 function game:start()
-  self.world = World(Map("pulltest"))
+  self.world = World(Map("bordrtest"))
 
   self.world.rules:parse()
   self.world.updates:applyVisuals()
@@ -74,7 +74,10 @@ function game:doTurn(x, y, player)
 
   self.world.movement:move(x, y, player)
   self.world.rules:parse()
+  self.world.updates:convertUnits()
+  self.world.rules:parse()
   self.world.updates:applyVisuals()
+  self.world:resetOOB()
 
   utils.performance.stop()
 end

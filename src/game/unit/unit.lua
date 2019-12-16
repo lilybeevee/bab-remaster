@@ -19,6 +19,7 @@ local unit = Class{
   draw      = {},
   active    = false,
   blocked   = false,
+  oob       = false,
 
   -- getting key falls back to data if key doesn't exist
   __index = function(self, key)
@@ -54,6 +55,12 @@ function unit:move(x, y, o)
       self.draw.y = y
     end)
   end
+
+  if self.x and self.y and self.world.units_by_tile[self.x..","..self.y] then
+    table.remove_value(self.world.units_by_tile[self.x..","..self.y], self)
+  end
+  self.world.units_by_tile[x..","..y] = self.world.units_by_tile[x..","..y] or {}
+  table.insert(self.world.units_by_tile[x..","..y], self)
 
   self.x = x
   self.y = y
