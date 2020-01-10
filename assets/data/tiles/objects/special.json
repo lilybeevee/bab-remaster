@@ -26,5 +26,13 @@
     "sprite": ["text/bordr"],
     "types": ["object"],
     "color": [[2, 0]]
+  },
+  {
+    "name": "txt_every1",
+    "sprite": ["text/every1"],
+    "types": ["object"],
+    "color": [[0, 3]],
+    "desc": "EVERY1: Every object type in the level, aside from special objects like TXT, NO1, LVL, BORDR, and MOUS.",
+    "tags": ["all", "everyone", "every1"]
   }
 ]

@@ -12,7 +12,7 @@ function game:enter()
 end
 
 function game:start()
-  self.world = World(Map("bordrtest"))
+  self.world = World(Map("every1test"))
 
   self.world.rules:parse()
   self.world.updates:applyVisuals()

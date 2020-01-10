@@ -30,6 +30,8 @@ function words.compare(word1, word2)
       elseif words.isObject(as) ~= words.isObject(bs) then
         -- only match objects with objects
         result = false
+      elseif as == "every1" and words.isEvery1(bs) then
+        result = not a:endsWith("n't")
       elseif a:startsWith("txt_") and a:endsWith("n't") then
         -- txt_babn't only matches with other txt_ that isn't bab
         if not b:startsWith("txt_") then
@@ -74,7 +76,7 @@ end
 function words.isObject(name)
   if name:endsWith("n't") then name = name:sub(1, -4) end
 
-  if name == "txt" or name:startsWith("txt_") then
+  if name == "every1" or name == "txt" or name:startsWith("txt_") then
     return true
   else
     local data = Assets.unitDataByName("txt_" .. name)
@@ -83,7 +85,11 @@ function words.isObject(name)
 end
 
 function words.hasMultiple(word)
-  return word == "txt" or (word:endsWith("n't") and words.isObject(word))
+  return word == "every1" or word == "txt" or (word:endsWith("n't") and words.isObject(word))
+end
+
+function words.isEvery1(word)
+  return word ~= "no1" and word ~= "lvl" and word ~= "bordr" and word ~= "mous" and word ~= "txt" and not word:startsWith("txt_")
 end
 
 function words.getNtCount(word)
