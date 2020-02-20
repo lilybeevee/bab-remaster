@@ -12,7 +12,7 @@ function game:enter()
 end
 
 function game:start()
-  self.world = World(Map("every1test"))
+  self.world = World(Map("destroytest"))
 
   self.world.rules:parse()
   self.world.updates:applyVisuals()
@@ -75,6 +75,8 @@ function game:doTurn(x, y, player)
   self.world.movement:move(x, y, player)
   self.world.rules:parse()
   self.world.updates:convertUnits()
+  self.world.rules:parse()
+  self.world.updates:updateUnits()
   self.world.rules:parse()
   self.world.updates:applyVisuals()
   self.world:resetOOB()

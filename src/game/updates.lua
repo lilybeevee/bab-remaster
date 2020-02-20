@@ -5,7 +5,134 @@ local updates = Class{
 }
 
 function updates:updateUnits()
-  -- this is where    like   most of the stuff will go i guess
+  --[[ update order:
+  gone
+  moar
+  nuek
+  split
+  vs
+  noswim
+  ouch
+  hotte
+  :(
+  fordor
+  snacc
+  tryagain
+  delet
+  :o
+  2edit
+  un:)
+  :)
+  soko
+  creat
+  ]]
+  
+  local destroys = {}
+  
+  --gone
+  for _,unit in ipairs(self.world:getUnitsWithProp("gone")) do
+    self.world:removeUnit(unit)
+  end
+  
+  --moar
+  
+  --nuek
+  
+  --split
+  
+  --vs
+  
+  --noswim
+  for _,unit in ipairs(self.world:getUnitsWithProp("noswim")) do
+    for _,on in ipairs(self.world:getUnitsOnTile(unit.x, unit.y, function(on) return on ~= unit end)) do
+      if true then --flye / ignor checks here
+        destroys[unit] = true
+        destroys[on] = true
+      end
+    end
+  end
+  
+  for unit,_ in pairs(destroys) do
+    self.world:removeUnit(unit)
+  end
+  destroys = {}
+  
+  --ouch
+  
+  --hotte
+  for _,unit in ipairs(self.world:getUnitsWithProp("hotte")) do
+    for _,on in ipairs(self.world:getUnitsOnTile(unit.x, unit.y, function(on) return on:hasProperty("fridgd") end)) do
+      if true then --flye / ignor checks here
+        destroys[on] = true
+      end
+    end
+  end
+  
+  for unit,_ in pairs(destroys) do
+    self.world:removeUnit(unit)
+  end
+  destroys = {}
+  
+  -- :(
+  for _,unit in ipairs(self.world:getUnitsWithProp(":(")) do
+    for _,on in ipairs(self.world:getUnitsOnTile(unit.x, unit.y, function(on) return on:hasProperty("u") end)) do
+      if true then --flye / ignor checks here
+        destroys[on] = true
+      end
+    end
+  end
+  
+  for unit,_ in pairs(destroys) do
+    self.world:removeUnit(unit)
+  end
+  destroys = {}
+  
+  --fordor
+  for _,unit in ipairs(self.world:getUnitsWithProp("fordor")) do
+    for _,on in ipairs(self.world:getUnitsOnTile(unit.x, unit.y, function(on) return on:hasProperty("nedkee") end)) do
+      if true then --flye / ignor checks here
+        destroys[unit] = true
+        destroys[on] = true
+        break
+      end
+    end
+  end
+  
+  for unit,_ in pairs(destroys) do
+    self.world:removeUnit(unit)
+  end
+  destroys = {}
+  
+  --snacc
+  
+  --tryagain
+  
+  --delet
+  
+  --:o
+  for _,unit in ipairs(self.world:getUnitsWithProp(":o")) do
+    for _,on in ipairs(self.world:getUnitsOnTile(unit.x, unit.y, function(on) return on:hasProperty("u") end)) do
+      if true then --flye / ignor checks here
+        destroys[unit] = true
+        break
+      end
+    end
+  end
+  
+  for unit,_ in pairs(destroys) do
+    self.world:removeUnit(unit)
+  end
+  destroys = {}
+  
+  --2edit
+  
+  --un:)
+  
+  --:)
+  
+  --soko
+  
+  --creat
 end
 
 function updates:convertUnits()

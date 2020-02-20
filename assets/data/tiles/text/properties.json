@@ -48,6 +48,22 @@
     "tags": ["open"]
   },
   {
+	"name": "txt_hotte",
+	"sprite": ["text/hotte"],
+	"types": ["property"],
+	"color": [[2, 3]],
+	"desc": "HOTTE: At end of turn, HOTTE units destroys all units that are FRIDGD on their tile.",
+	"tags": ["hot"]
+  },
+  {
+	"name": "txt_fridgd",
+	"sprite": ["text/fridgd"],
+	"types": ["property"],
+	"color": [[1, 4]],
+	"desc": "FRIDGD: At end of turn, HOTTE units destroys all units that are FRIDGD on their tile.",
+	"tags": ["melt"]
+  },
+  {
     "name": "txt_:)",
     "sprite": ["text/good"],
     "types": ["property"],
@@ -57,6 +73,17 @@
     },
     "desc": ":): At end of turn, if U is on :) and survives, U R WIN!",
     "tags": ["win", "smiley", "face", "happy", "yay"]
+  },
+  {
+	"name": "txt_:(",
+    "sprite": ["text/bad"],
+    "types": ["property"],
+    "color": [[2, 1]],
+    "features": {
+      "sans": {"x": 20, "y": 6, "w": 4, "h": 4}
+    },
+    "desc": ":(: At end of turn, destroys any U objects on it.",
+    "tags": ["defeat", "sad", "face", "aw"]
   },
   {
     "name": "txt_noswim",
